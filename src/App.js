@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './login/views/LoginPage';
 import SignupPage from './signup/views/SignupPage';
 import DashboardPage from './dashboard/views/DashboardPage';
-import AdminUsersPage from './users/views/AdminUsersPage';
+import AdminUsersPage from './admin/views/AdminUsersPage';
 import DonationHistoryPage from './donations/views/DonationHistoryPage';
 import CharityManagementPage from './charities/views/CharityManagementPage';
 import TaxDeductionPage from './tax_deduction/views/TaxDeductionPage'; 
