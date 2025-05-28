@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import LoginPage from './login/views/LoginPage';
+import SignupPage from './signup/views/SignupPage';
+import DashboardPage from './dashboard/views/DashboardPage';
+import AdminUsersPage from './users/views/AdminUsersPage';
+import DonationHistoryPage from './donations/views/DonationHistoryPage';
+import CharityManagementPage from './charities/views/CharityManagementPage';
+import TaxDeductionPage from './tax_deduction/views/TaxDeductionPage'; 
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/admin-users" element={<AdminUsersPage />} />
+        <Route path="/donations" element={<DonationHistoryPage />} />
+        <Route path="/charity" element={<CharityManagementPage />} />
+        <Route path="/tax-deduction" element={<TaxDeductionPage />} /> 
+        <Route path="*" element={<LoginPage />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+
