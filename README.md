@@ -68,3 +68,27 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+git config --global user.name
+git config --global user.email
+
+
+git remote add origin https://github.com/valentinteo/FYP.git
+
+
+
+
+git add .                            # Stage all changed files
+git commit -m "Your commit message"  # Commit your changes
+git push                             # Push changes to GitHub
+
+
+#### Example 
+
+git add .
+git commit -m "Updated donation route and admin table UI"
+git push
+
+
+ i want u to get from 4 different tables get from user table user_name then from charity table charity_name then from donation table donation_id ,donation_amount and donation_created_datetime 

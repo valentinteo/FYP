@@ -39,6 +39,37 @@ app.get('/api/admin', (req, res) => {
   });
 });
 
+// Route to get all charities
+app.get('/api/charities', (req, res) => {
+  db.query('SELECT * FROM charity', (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+// Route to get simplified tax deduction info
+app.get('/api/tax-deduction', (req, res) => {
+  const query = `
+    SELECT 
+      u.user_name,
+      c.charity_name,
+      d.donation_id,
+      d.donation_amount,
+      d.donation_created_datetime
+    FROM donation d
+    JOIN user u ON d.donation_user_id = u.user_id
+    JOIN charity c ON d.donation_charity_id = c.charity_id
+    ORDER BY d.donation_created_datetime DESC
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
