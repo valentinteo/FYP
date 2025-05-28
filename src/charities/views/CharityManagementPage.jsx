@@ -7,7 +7,7 @@ const CharityManagementPage = () => {
 
   useEffect(() => {
     // Replace with actual API endpoint
-    fetch('/api/charities')
+    fetch('http://localhost:5000/api/charities')
       .then((res) => res.json())
       .then((data) => setCharities(data))
       .catch((err) => {

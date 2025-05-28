@@ -6,7 +6,7 @@ const TaxDeductionPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetch('/api/tax-deductions')
+    fetch('http://localhost:5000/api/tax-deduction')
       .then((res) => res.json())
       .then((data) => setDonations(data))
       .catch((err) => console.error('Failed to fetch data', err));
