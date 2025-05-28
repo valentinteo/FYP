@@ -39,6 +39,27 @@ app.get('/api/admin', (req, res) => {
   });
 });
 
+app.post('/api/admin', (req, res) => {
+  const { admin_name, admin_email, admin_phone, admin_password, admin_role } = req.body;
+
+  const sql = `
+    INSERT INTO admin (
+      admin_name, admin_email, admin_phone, admin_password, admin_role, admin_created_date_time, admin_last_login
+    ) VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+  `;
+
+  db.query(sql, [admin_name, admin_email, admin_phone, admin_password, admin_role], (err, result) => {
+    if (err) {
+      console.error('Failed to insert admin:', err);
+      return res.status(500).json({ error: err.message });
+    }
+    console.log('Admin inserted:', result);
+    res.status(201).json({ message: 'Admin created successfully' });
+  });
+});
+
+
+
 // Route to get all charities
 app.get('/api/charities', (req, res) => {
   db.query('SELECT * FROM charity', (err, results) => {

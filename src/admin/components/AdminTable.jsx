@@ -11,33 +11,85 @@ const AdminList = () => {
   }, []);
 
   return (
-    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-      <thead style={{ backgroundColor: '#2f4cf5', color: 'white' }}>
-        <tr>
-          <th>#ID</th>
-          <th>Admin Name</th>
-          <th>Email</th>
-          <th>Mobile No.</th>
-          <th>Created Date</th>
-          <th>Roles</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {admins.map(admin => (
-            <tr key={admin.admin_user_id}>
-              <td>{admin.admin_user_id}</td>
-              <td>{admin.admin_name}</td>
-              <td>{admin.admin_email}</td>
-              <td>{admin.admin_phone}</td>
-              <td>{admin.admin_role}</td>
-              <td>{new Date(admin.admin_created_date_time).toLocaleString()}</td>
-              <td>{new Date(admin.admin_last_login).toLocaleString()}</td>
+    <div style={{
+      backgroundColor: '#fff',
+      borderRadius: '12px',
+      padding: '2rem',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      overflowX: 'auto'
+    }}>
+      <h2 style={{ marginBottom: '1.5rem', color: '#2f4cf5' }}>Admin User List</h2>
+
+      <table style={{
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontFamily: 'Segoe UI, sans-serif',
+        fontSize: '14px'
+      }}>
+        <thead style={{
+          backgroundColor: '#2f4cf5',
+          color: 'white',
+          textAlign: 'left'
+        }}>
+          <tr>
+            <th style={headerCell}>#ID</th>
+            <th style={headerCell}>Admin Name</th>
+            <th style={headerCell}>Email</th>
+            <th style={headerCell}>Mobile No.</th>
+            <th style={headerCell}>Created Date</th>
+            <th style={headerCell}>Role</th>
+            <th style={headerCell}>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {admins.map((admin, index) => (
+            <tr key={admin.admin_user_id} style={index % 2 === 0 ? rowEven : rowOdd}>
+              <td style={cell}>{admin.admin_user_id}</td>
+              <td style={cell}>{admin.admin_name}</td>
+              <td style={cell}>{admin.admin_email}</td>
+              <td style={cell}>{admin.admin_phone}</td>
+              <td style={cell}>{new Date(admin.admin_created_date_time).toLocaleString()}</td>
+              <td style={cell}>{admin.admin_role}</td>
+              <td style={cell}>
+                <button style={actionBtn}>Edit</button>
+                <button style={{ ...actionBtn, backgroundColor: '#e74c3c' }}>Delete</button>
+              </td>
             </tr>
-        ))}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
+};
+
+// Style constants
+const headerCell = {
+  padding: '12px 16px',
+  fontWeight: '600'
+};
+
+const cell = {
+  padding: '12px 16px',
+  borderBottom: '1px solid #ddd'
+};
+
+const rowEven = {
+  backgroundColor: '#f9f9f9'
+};
+
+const rowOdd = {
+  backgroundColor: '#ffffff'
+};
+
+const actionBtn = {
+  marginRight: '8px',
+  padding: '6px 12px',
+  fontSize: '12px',
+  backgroundColor: '#2f4cf5',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer'
 };
 
 export default AdminList;

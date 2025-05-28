@@ -1,43 +1,58 @@
-// import React from 'react';
-// import UserTable from '../components/UserTable';
-// import Sidebar from '../../common/Sidebar';
-
-
-// const AdminUsersPage = () => {
-//   return (
-//     <div style={{ display: 'flex' }}>
-//       <Sidebar />
-//       <div style={{ flex: 1, padding: '1rem' }}>
-//         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//           <h2>User List</h2>
-//           <button style={{ backgroundColor: 'green', color: 'white', padding: '0.5rem 1rem' }}>+ Add New User</button>
-//         </div>
-//         <input type="text" placeholder="Search" style={{ margin: '1rem 0', padding: '0.5rem' }} />
-//         <UserTable />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AdminUsersPage;
-
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import UserTable from '../components/AdminTable';
 import Sidebar from '../../common/Sidebar';
+import AddAdminModal from '../components/AddAdminModal';
 
 const AdminUsersPage = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    admin_name: '',
+    admin_email: '',
+    admin_phone: '',
+    admin_password: '',
+    admin_role: ''
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAddAdmin = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        alert('Admin added successfully');
+        setShowModal(false);
+        window.location.reload();
+      } else {
+        alert('Failed to add admin');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div>
-      {/* Sidebar stays fixed */}
       <Sidebar />
-
-      {/* Main content pushed right by sidebar width */}
       <div style={{ marginLeft: '300px', padding: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2>User List</h2>
-          <button style={{ backgroundColor: 'green', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px' }}>
+          <button
+            onClick={() => setShowModal(true)}
+            style={{
+              backgroundColor: 'green',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              border: 'none',
+              borderRadius: '4px'
+            }}
+          >
             + Add New User
           </button>
         </div>
@@ -56,6 +71,15 @@ const AdminUsersPage = () => {
 
         <UserTable />
       </div>
+
+      {showModal && (
+        <AddAdminModal
+          formData={formData}
+          onChange={handleInputChange}
+          onSubmit={handleAddAdmin}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
