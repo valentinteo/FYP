@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CharityTable = ({ charities }) => {
+const CharityTable = ({ charities, onEdit, onDelete }) => {
   if (!Array.isArray(charities) || charities.length === 0) {
     return <p style={{ padding: '1rem', color: '#888' }}>No charity data available.</p>;
   }
@@ -23,7 +23,7 @@ const CharityTable = ({ charities }) => {
                 src={`http://localhost:5000/uploads/${charity.charity_image}`}
                 alt={charity.charity_name}
                 style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '6px' }}
-                onError={(e) => (e.target.src = '/placeholder.png')} // fallback
+                onError={(e) => (e.target.src = '/placeholder.png')}
               />
             ) : (
               <span style={{ color: '#aaa' }}>No Image</span>
@@ -33,14 +33,15 @@ const CharityTable = ({ charities }) => {
           <div style={{ ...colStyle, flex: 3 }}>{charity.charity_description}</div>
           <div style={{ ...colStyle, flex: 2 }}>{charity.charity_UEN}</div>
           <div style={{ ...colStyle, flex: 2 }}>
-            <button style={editBtn}>✏️ Edit</button>
-            <button style={deleteBtn}>🗑️ Delete</button>
+            <button style={editBtn} onClick={() => onEdit(charity)}>✏️ Edit</button>
+            <button style={deleteBtn} onClick={() => onDelete(charity.charity_id)}>🗑️ Delete</button>
           </div>
         </div>
       ))}
     </div>
   );
 };
+
 
 // 🔧 Styles
 const tableWrapper = {
