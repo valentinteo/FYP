@@ -8,7 +8,7 @@ const CharityTable = ({ charities, onEdit, onDelete }) => {
   return (
     <div style={tableWrapper}>
       <div style={tableHeader}>
-        <div style={{ ...colStyle, flex: 1 }}>Image</div>
+        <div style={{ ...colStyle, flex: 1 }}>Charity Icon</div>
         <div style={{ ...colStyle, flex: 2 }}>Charity Name</div>
         <div style={{ ...colStyle, flex: 3 }}>Description</div>
         <div style={{ ...colStyle, flex: 2 }}>UEN</div>

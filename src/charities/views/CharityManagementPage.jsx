@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../../common/Sidebar';
 import CharityTable from '../components/CharityTable';
 import AddCharityModal from '../components/AddCharityModal';
-import EditCharityModal from '../components/EditCharityModal'; 
+import EditCharityModal from '../components/EditCharityModal';
+import SearchBar from '../components/Searchbar';
 
 const CharityManagementPage = () => {
   const [charities, setCharities] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingCharity, setEditingCharity] = useState(null); 
+  const [editingCharity, setEditingCharity] = useState(null);
 
   const fetchCharities = () => {
     fetch('http://localhost:5000/api/charities')
@@ -52,6 +54,12 @@ const CharityManagementPage = () => {
     fetchCharities();
   };
 
+  const filteredCharities = charities.filter(charity =>
+    charity.charity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    charity.charity_UEN.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar />
@@ -66,11 +74,10 @@ const CharityManagementPage = () => {
           </button>
         </div>
 
-        <button style={{ backgroundColor: '#ccc', padding: '0.5rem 1rem', margin: '1rem 0' }}>
-          Date Added
-        </button>
+        {/* ✅ Replaced button with SearchBar */}
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
 
-        <CharityTable charities={charities} onEdit={handleEdit} onDelete={handleDelete} />
+        <CharityTable charities={filteredCharities} onEdit={handleEdit} onDelete={handleDelete} />
 
         {showAddModal && (
           <AddCharityModal onClose={() => setShowAddModal(false)} onCharityAdded={handleCharityAdded} />
@@ -89,4 +96,3 @@ const CharityManagementPage = () => {
 };
 
 export default CharityManagementPage;
-
