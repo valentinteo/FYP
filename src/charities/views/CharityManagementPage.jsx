@@ -16,7 +16,8 @@ const CharityManagementPage = () => {
       .then((res) => res.json())
       .then((data) => setCharities(data))
       .catch((err) => {
-        console.error('Failed to fetch charities:', err);
+        console.error('❌ Failed to fetch charities:', err);
+        alert('Error loading charities');
         setCharities([]);
       });
   };
@@ -25,9 +26,13 @@ const CharityManagementPage = () => {
     fetchCharities();
   }, []);
 
-  const handleCharityAdded = () => {
+  const handleCharityAdded = (error = null) => {
     setShowAddModal(false);
-    fetchCharities();
+    if (error) {
+      alert(`❌ Failed to add charity: ${error}`);
+    } else {
+      fetchCharities();
+    }
   };
 
   const handleEdit = (charity) => {
@@ -39,13 +44,20 @@ const CharityManagementPage = () => {
     if (!confirm) return;
 
     try {
-      await fetch(`http://localhost:5000/api/charities/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/charities/${id}`, {
         method: 'DELETE',
       });
+
+      const result = await res.json();
+      if (!res.ok) {
+        alert(`❌ Failed to delete charity: ${result.details || result.error}`);
+        return;
+      }
+
       fetchCharities();
     } catch (err) {
-      console.error('Failed to delete charity:', err);
-      alert('Failed to delete charity');
+      console.error('❌ Failed to delete charity:', err);
+      alert('Network error while deleting charity');
     }
   };
 
@@ -54,11 +66,10 @@ const CharityManagementPage = () => {
     fetchCharities();
   };
 
-  const filteredCharities = charities.filter(charity =>
+  const filteredCharities = charities.filter((charity) =>
     charity.charity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     charity.charity_UEN.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
 
   return (
     <div style={{ display: 'flex' }}>
@@ -74,13 +85,15 @@ const CharityManagementPage = () => {
           </button>
         </div>
 
-        {/* ✅ Replaced button with SearchBar */}
         <SearchBar value={searchTerm} onChange={setSearchTerm} />
 
         <CharityTable charities={filteredCharities} onEdit={handleEdit} onDelete={handleDelete} />
 
         {showAddModal && (
-          <AddCharityModal onClose={() => setShowAddModal(false)} onCharityAdded={handleCharityAdded} />
+          <AddCharityModal
+            onClose={() => setShowAddModal(false)}
+            onCharityAdded={handleCharityAdded}
+          />
         )}
 
         {editingCharity && (

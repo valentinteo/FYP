@@ -19,7 +19,7 @@ const AddCharityModal = ({ onClose, onCharityAdded }) => {
     setImageFile(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = new FormData();
 
@@ -30,16 +30,25 @@ const AddCharityModal = ({ onClose, onCharityAdded }) => {
       form.append('charity_image', imageFile);
     }
 
-    fetch('http://localhost:5000/api/charities', {
-      method: 'POST',
-      body: form
-    })
-      .then((res) => res.json())
-      .then(() => onCharityAdded())
-      .catch((err) => {
-        console.error('Error adding charity:', err);
-        alert('Failed to add charity');
+    try {
+      const res = await fetch('http://localhost:5000/api/charities', {
+        method: 'POST',
+        body: form
       });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        console.error('❌ Backend error:', result);
+        onCharityAdded(result.details || result.error || 'Unknown error occurred.');
+        return;
+      }
+
+      onCharityAdded(); // No error
+    } catch (err) {
+      console.error('❌ Network error while adding charity:', err);
+      onCharityAdded('Network error occurred. Please try again.');
+    }
   };
 
   return (
@@ -93,6 +102,9 @@ const AddCharityModal = ({ onClose, onCharityAdded }) => {
     </div>
   );
 };
+
+
+
 
 // Styles
 const modalBackdropStyle = {
