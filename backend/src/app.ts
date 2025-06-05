@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { connect_db, sqlServerDb } from './database/connection';
 import charityRoutes from './routes/charity.routes';
+import donationRoutes from './routes/donation.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 
 dotenv.config();
 
@@ -14,7 +16,14 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(cors());
 
 app.use(express.json());
+
 app.use('/api/charities', charityRoutes);
+
+app.use('/api/donations', donationRoutes);
+
+app.use('/api/donations/charity-summary', dashboardRoutes);
+
+app.use('/api', dashboardRoutes)
 
 connect_db(); // connect to SQL Server
 // optional: sqlServerDb.sync() – only if needed again here

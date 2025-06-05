@@ -3,6 +3,7 @@ dotenv.config();
 import { Sequelize } from "sequelize-typescript";
 import path from 'path';
 
+
 const parentDir = path.dirname(__dirname);
 
 export const sqlServerDb = new Sequelize({

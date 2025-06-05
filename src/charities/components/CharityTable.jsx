@@ -22,7 +22,7 @@ const CharityTable = ({ charities, onEdit, onDelete }) => {
               <img
                 src={`http://localhost:5000/uploads/${charity.charity_image}`}
                 alt={charity.charity_name}
-                style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '6px' }}
+                style={imgStyle}
                 onError={(e) => (e.target.src = '/placeholder.png')}
               />
             ) : (
@@ -75,10 +75,10 @@ const colStyle = {
 };
 
 const imgStyle = {
-  width: '50px',
-  height: '50px',
+  width: '100px',
+  height: '100px',
   borderRadius: '6px',
-  objectFit: 'cover',
+  objectFit: 'contain',
 };
 
 const editBtn = {
