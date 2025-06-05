@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import StatCard from './StatCard'; 
 
 const TotalDonationsCard = () => {
   const [totalDonations, setTotalDonations] = useState('--');

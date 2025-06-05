@@ -4,13 +4,15 @@ const StatCard = ({ title, color, children }) => (
   <div style={{
     backgroundColor: color,
     color: '#fff',
-    padding: '1rem',
-    borderRadius: '4px',
+    padding: '1.5rem',
+    borderRadius: '8px',
     flex: 1,
     margin: '0 0.5rem',
     textAlign: 'center',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    minWidth: '250px'
   }}>
-    <h4>{title}</h4>
+    <h4 style={{ marginBottom: '1rem', fontSize: '1.1rem', letterSpacing: '0.5px' }}>{title}</h4>
     <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{children}</div>
   </div>
 );
