@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import styles from './PieChartStyles'; // Adjust the path if needed
-
+import styles from './PieChartStyles'; 
 const COLORS = ['#0088FE', '#00C49F'];
 
 const PieChartPlaceholder = () => {

@@ -69,7 +69,7 @@ app.use('/api/charities', charityRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/donations/charity-summary', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/auth', authRoutes); // ✅ Add this for login route
+app.use('/api/auth', authRoutes); 
 app.use('/api', dashboardRoutes);
 
 connect_db(); // connect to SQL Server
