@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import styles from './PieChartStyles'; 
+import styles from './PieChartStyles';
+
 const COLORS = ['#0088FE', '#00C49F'];
 
 const PieChartPlaceholder = () => {
@@ -13,20 +14,18 @@ const PieChartPlaceholder = () => {
     fetch('http://localhost:5000/api/donationMode')
       .then((res) => res.json())
       .then((donations) => {
-        let merchantTotal = 0;
-        let userTotal = 0;
+        let merchantCount = 0;
+        let userCount = 0;
 
         donations.forEach((donation) => {
-          if (donation.donation_mode === 'merchant') {
-            merchantTotal += Number(donation.donation_amount);
-          } else if (donation.donation_mode === 'user') {
-            userTotal += Number(donation.donation_amount);
-          }
+          const mode = donation.donation_mode;
+          if (mode === 'merchant') merchantCount += 1;
+          else if (mode === 'user') userCount += 1;
         });
 
         setChartData([
-          { name: 'Merchant Discount', value: merchantTotal },
-          { name: 'User Discount', value: userTotal },
+          { name: 'Merchant Discount', value: merchantCount },
+          { name: 'User Discount', value: userCount },
         ]);
       })
       .catch((err) => {
@@ -61,3 +60,4 @@ const PieChartPlaceholder = () => {
 };
 
 export default PieChartPlaceholder;
+
