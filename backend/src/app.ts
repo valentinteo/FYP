@@ -53,7 +53,8 @@ import charityRoutes from './routes/charity.routes';
 import donationRoutes from './routes/donation.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import adminRoutes from './routes/admin.routes';
-import authRoutes from './routes/auth.routes'; // ✅ Import auth routes
+import authRoutes from './routes/auth.routes'; 
+import taxDeductionRoutes from './routes/taxDeduction.routes';
 
 dotenv.config();
 
@@ -71,8 +72,9 @@ app.use('/api/donations/charity-summary', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api', dashboardRoutes);
+app.use('/api', taxDeductionRoutes);
 
-connect_db(); // connect to SQL Server
+connect_db(); 
 
 console.log({
   host: process.env.DB_HOST,

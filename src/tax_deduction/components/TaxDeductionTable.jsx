@@ -24,19 +24,21 @@ const TaxDeductionTable = ({ donations }) => {
       <tbody>
         {donations.map((donation, idx) => (
           <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-            <td style={{ padding: '10px' }}>{donation.id}</td>
-            <td style={{ padding: '10px' }}>{donation.date}</td>
-            <td style={{ padding: '10px' }}>{donation.charity}</td>
-            <td style={{ padding: '10px' }}>${donation.amount}</td>
+            <td style={{ padding: '10px' }}>{donation.donation_id}</td>
+            <td style={{ padding: '10px' }}>
+              {new Date(donation.date).toLocaleString('en-GB')}
+            </td>
+            <td style={{ padding: '10px' }}>{donation.charity_name}</td>
+            <td style={{ padding: '10px' }}>${Number(donation.donation_amount).toFixed(2)}</td>
             <td style={{ padding: '10px' }}>{donation.user}</td>
             <td style={{ padding: '10px' }}>
-              {donation.eligible ? (
+              {donation.eligibility === 'Eligible' ? (
                 <FaCheckCircle color="green" size={18} />
               ) : (
                 <FaTimesCircle color="red" size={18} />
               )}
             </td>
-            <td style={{ padding: '10px' }}>${donation.total}</td>
+            <td style={{ padding: '10px' }}>${Number(donation.total_donated).toFixed(2)}</td>
           </tr>
         ))}
       </tbody>
@@ -45,3 +47,4 @@ const TaxDeductionTable = ({ donations }) => {
 };
 
 export default TaxDeductionTable;
+
