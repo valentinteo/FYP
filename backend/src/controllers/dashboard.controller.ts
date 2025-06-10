@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Donation from '../models/donation.model';
-import  Charity  from '../models/charity.model';
-import Fundraising from '../models/fundraising.model'; 
+import Charity from '../models/charity.model';
+import Fundraising from '../models/fundraising.model';
 import { Sequelize } from 'sequelize';
 
 
@@ -54,7 +54,7 @@ export const TotalDonors = async (req: Request, res: Response) => {
     const result = await Donation.findAll({
       attributes: [[Sequelize.fn('COUNT', Sequelize.fn('DISTINCT', Sequelize.col('donation_user_id'))), 'total_donors']]
     });
-    res.json(result[0]); 
+    res.json(result[0]);
   } catch (err) {
     console.error('Failed to fetch total donors:', err);
     res.status(500).json({ error: 'Failed to fetch total donors' });
