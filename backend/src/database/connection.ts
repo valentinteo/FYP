@@ -33,7 +33,8 @@ export const connect_db = async () => {
     try {
         await sqlServerDb.authenticate();
         console.log('✅ Database connection established successfully.');
-        await sqlServerDb.sync({ alter: true });
+        // await sqlServerDb.sync({ alter: true });
+        await sqlServerDb.sync();
         console.log("🔄 Database sync complete.");
     } catch (error) {
         console.error('❌ Unable to connect to the database:', error);
