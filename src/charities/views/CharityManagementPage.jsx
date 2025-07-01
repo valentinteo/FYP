@@ -122,17 +122,27 @@ const CharityManagementPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCharity, setEditingCharity] = useState(null);
-  const [adminData, setAdminData] = useState(null); // ✅ Added for role validation
+  const [adminData, setAdminData] = useState(null);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem('admin');
-    if (stored) {
-      setAdminData(JSON.parse(stored));
+    try {
+      const stored = localStorage.getItem('admin');
+      const parsed = stored && stored !== 'undefined' ? JSON.parse(stored) : null;
+      const role = parsed?.admin?.admin_role;
+
+      if (role === 'superadmin' || role === 'Charity Admin') {
+        setAdminData(parsed.admin);
+      } else {
+        setAdminData('unauthorized');
+      }
+    } catch (err) {
+      console.error('Failed to parse admin from localStorage:', err);
+      setAdminData('unauthorized');
     }
   }, []);
 
   useEffect(() => {
-    if (adminData?.admin_role === 'superadmin') {
+    if (adminData && adminData !== 'unauthorized') {
       fetchCharities();
     }
   }, [adminData]);
@@ -193,11 +203,9 @@ const CharityManagementPage = () => {
     charity.charity_UEN.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (adminData === null) {
-    return <div>Loading...</div>;
-  }
+  if (adminData === null) return <div>Loading...</div>;
 
-  if (adminData.admin_role !== 'superadmin') {
+  if (adminData === 'unauthorized') {
     return (
       <div style={{ padding: '2rem' }}>
         <h2>Access Denied</h2>
@@ -226,16 +234,17 @@ const CharityManagementPage = () => {
       <div style={{ marginLeft: '260px', flex: 1, padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h2>MANAGE CHARITY ORGANIZATION</h2>
-          <button
-            onClick={() => setShowAddModal(true)}
-            style={{ backgroundColor: '#0000FF', color: 'white', padding: '0.5rem 1rem' }}
-          >
-            + Add New Charity
-          </button>
+          {adminData.admin_role === 'superadmin' && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              style={{ backgroundColor: '#0000FF', color: 'white', padding: '0.5rem 1rem' }}
+            >
+              + Add New Charity
+            </button>
+          )}
         </div>
 
         <SearchBar value={searchTerm} onChange={setSearchTerm} />
-
         <CharityTable charities={filteredCharities} onEdit={handleEdit} onDelete={handleDelete} />
 
         {showAddModal && (
@@ -258,3 +267,4 @@ const CharityManagementPage = () => {
 };
 
 export default CharityManagementPage;
+

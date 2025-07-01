@@ -8,7 +8,6 @@ import AdminUsersPage from './admin/views/AdminUsersPage';
 import DonationHistoryPage from './donations/views/DonationHistoryPage';
 import CharityManagementPage from './charities/views/CharityManagementPage';
 import TaxDeductionPage from './tax_deduction/views/TaxDeductionPage'; 
-import ApproveAdminsPage from './admin/views/ApproveAdminsPage';
 import RequireSuperadmin from './admin/components/RequireSuperadmin';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ForgetPasswordPage from './login/views/ForgetPasswordPage';
@@ -28,11 +27,12 @@ function App() {
         <Route path="*" element={<LoginPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
-        <Route path="/admin/approve" element={
-          <RequireSuperadmin>
-            <ApproveAdminsPage />
-          </RequireSuperadmin>
-        } />
+        <Route path="/admin-users" element={
+  <RequireSuperadmin>
+    <AdminUsersPage />
+  </RequireSuperadmin>
+} />
+
       </Routes>
     </Router>
   );
