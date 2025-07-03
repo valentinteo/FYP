@@ -71,7 +71,7 @@ export default class Admin extends Model {
   @Column({ type: DataType.DATE, field: 'admin_created_date_time' })
   admin_created_date_time!: Date;
 
-  // ✅ NEW COLUMN for approval status
-  @Column({ type: DataType.BOOLEAN, defaultValue: false })
-  is_approved!: boolean;
+  // // ✅ NEW COLUMN for approval status
+  // @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  // is_approved!: boolean;
 }

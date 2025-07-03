@@ -310,7 +310,7 @@ const DonationHistoryPage = () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (!['superadmin', 'Charity Admin'].includes(data.admin_role)) {
+        if (!['SuperAdmin', 'Charity Admin'].includes(data.admin_role)) {
           navigate('/unauthorized', {
             state: {
               admin_email,

@@ -207,31 +207,76 @@
 import { Request, Response } from 'express';
 import Admin from '../models/admin.model';
 
-// ✅ Login controller
+// // ✅ Login controller
+// export const loginUser = async (req: Request, res: Response) => {
+//   const { admin_email, admin_password } = req.body;
+
+
+//   try {
+//     const admin = await Admin.findOne({ where: { admin_email } });
+//     if (!admin) return res.status(401).json({ error: 'Invalid email or password' });
+
+//     if (admin.admin_password !== admin_password) {
+//       return res.status(401).json({ error: 'Invalid email or password' });
+//     }
+
+//     res.json({
+//       message: 'Login successful',
+//       admin_user_id: admin.admin_user_id,
+//       admin_name: admin.admin_name,
+//       admin_email: admin.admin_email,
+//       admin_phone: admin.admin_phone,
+//       admin_role: admin.admin_role,
+//       is_approved: admin.is_approved
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Login failed' });
+//   }
+// };
+
+
+
+
 export const loginUser = async (req: Request, res: Response) => {
   const { admin_email, admin_password } = req.body;
 
+  // 🔍 Normalize email to lowercase
+  const normalizedEmail = admin_email.toLowerCase();
+
+  // ✅ Debug logs
+  console.log('EMAIL:', normalizedEmail);
+  console.log('PASSWORD:', admin_password);
+
   try {
-    const admin = await Admin.findOne({ where: { admin_email } });
-    if (!admin) return res.status(401).json({ error: 'Invalid email or password' });
+    const admin = await Admin.findOne({ where: { admin_email: normalizedEmail } });
+
+    // ✅ Log DB result
+    console.log('USER FOUND:', admin);
+
+    if (!admin) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
     if (admin.admin_password !== admin_password) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    res.json({
+    return res.json({
       message: 'Login successful',
       admin_user_id: admin.admin_user_id,
       admin_name: admin.admin_name,
       admin_email: admin.admin_email,
       admin_phone: admin.admin_phone,
-      admin_role: admin.admin_role,
-      is_approved: admin.is_approved
+      admin_role: admin.admin_role
     });
+
+
   } catch (error) {
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login error:', error);
+    return res.status(500).json({ error: 'Login failed' });
   }
 };
+
 
 // ✅ Signup controller
 export const signupAdmin = async (req: Request, res: Response) => {
@@ -301,7 +346,7 @@ export const getCurrentAdmin = async (req: Request, res: Response) => {
       admin_email: admin.admin_email,
       admin_phone: admin.admin_phone,
       admin_role: admin.admin_role,
-      is_approved: admin.is_approved
+      // is_approved: admin.is_approved
     });
   } catch (error) {
     console.error('Get current admin error:', error);

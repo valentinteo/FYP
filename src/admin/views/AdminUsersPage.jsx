@@ -687,7 +687,7 @@ const AdminUsersPage = () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.admin_role !== 'superadmin') {
+        if (data.admin_role !== 'SuperAdmin') {
           navigate('/unauthorized', {
             state: {
               admin_email,
