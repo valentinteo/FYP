@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const UnauthorizedPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [redirectPath, setRedirectPath] = useState(null);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem('admin');
-    if (stored) {
-      const admin = JSON.parse(stored);
-      if (admin?.admin?.admin_role === 'charity') {
-        setRedirectPath('/charity');
-      } else if (admin?.admin?.admin_role === 'tax') {
-        setRedirectPath('/tax-deduction');
-      }
+    const { admin_role } = location.state || {};
+
+    if (admin_role === 'charity') {
+      setRedirectPath('/charity');
+    } else if (admin_role === 'tax') {
+      setRedirectPath('/tax-deduction');
     }
-  }, []);
+  }, [location.state]);
 
   const handleRedirect = () => {
     if (redirectPath) {
-      navigate(redirectPath);
+      navigate(redirectPath, { state: location.state });
     } else {
-      navigate('/dashboard'); // fallback
+      navigate('/dashboard', { state: location.state });
     }
   };
 

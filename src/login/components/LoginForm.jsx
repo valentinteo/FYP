@@ -1,132 +1,222 @@
-// // import React from 'react';
-// // import { Link } from 'react-router-dom';
+// // // import React from 'react';
+// // // import { Link } from 'react-router-dom';
 
-// // const LoginForm = () => {
-// //     return (
-// //         <form style={styles.form}>
-// //             <label>Email:</label>
-// //             <input type="email" placeholder="Enter Email" style={styles.input} />
+// // // const LoginForm = () => {
+// // //     return (
+// // //         <form style={styles.form}>
+// // //             <label>Email:</label>
+// // //             <input type="email" placeholder="Enter Email" style={styles.input} />
 
-// //             <label>Password:</label>
-// //             <input type="password" placeholder="Enter Password" style={styles.input} />
+// // //             <label>Password:</label>
+// // //             <input type="password" placeholder="Enter Password" style={styles.input} />
 
-// //             <button type="submit" style={styles.button}>Login</button>
+// // //             <button type="submit" style={styles.button}>Login</button>
 
-// //             <p>
-// //                 Don't have an account? <Link to="/signup">Sign up</Link>
-// //             </p>
-// //         </form>
-// //     );
-// // };
+// // //             <p>
+// // //                 Don't have an account? <Link to="/signup">Sign up</Link>
+// // //             </p>
+// // //         </form>
+// // //     );
+// // // };
 
-// // const styles = {
-// //     form: {
-// //         display: 'flex',
-// //         flexDirection: 'column',
-// //         gap: '1rem',
-// //         textAlign: 'left',
-// //     },
-// //     input: {
-// //         padding: '0.5rem',
-// //         backgroundColor: '#777',
-// //         color: '#fff',
-// //         border: 'none',
-// //         borderRadius: '4px',
-// //     },
-// //     button: {
-// //         backgroundColor: '#0000FF',
-// //         color: '#fff',
-// //         border: 'none',
-// //         borderRadius: '4px',
-// //         padding: '0.5rem',
-// //         cursor: 'pointer',
-// //     },
-// //     linkText: {
-// //         marginTop: '1rem',
-// //         fontSize: '0.9rem',
-// //     }
-// // };
+// // // const styles = {
+// // //     form: {
+// // //         display: 'flex',
+// // //         flexDirection: 'column',
+// // //         gap: '1rem',
+// // //         textAlign: 'left',
+// // //     },
+// // //     input: {
+// // //         padding: '0.5rem',
+// // //         backgroundColor: '#777',
+// // //         color: '#fff',
+// // //         border: 'none',
+// // //         borderRadius: '4px',
+// // //     },
+// // //     button: {
+// // //         backgroundColor: '#0000FF',
+// // //         color: '#fff',
+// // //         border: 'none',
+// // //         borderRadius: '4px',
+// // //         padding: '0.5rem',
+// // //         cursor: 'pointer',
+// // //     },
+// // //     linkText: {
+// // //         marginTop: '1rem',
+// // //         fontSize: '0.9rem',
+// // //     }
+// // // };
 
-// // export default LoginForm;
+// // // export default LoginForm;
 
+
+// // // import React from 'react';
+// // // import { Link, useNavigate } from 'react-router-dom';
+
+// // // const LoginForm = () => {
+// // //     const navigate = useNavigate();
+
+// // //     const handleSubmit = async (e) => {
+// // //         e.preventDefault();
+// // //         const email = e.target[0].value;
+// // //         const password = e.target[1].value;
+
+// // //         try {
+// // //             const res = await fetch('http://localhost:5000/api/auth/login', {
+// // //                 method: 'POST',
+// // //                 headers: { 'Content-Type': 'application/json' },
+// // //                 body: JSON.stringify({
+// // //                     admin_email: email,
+// // //                     admin_password: password
+// // //                 })
+// // //             });
+
+// // //             const data = await res.json();
+
+// // //             if (res.ok) {
+// // //                 alert('Login successful');
+// // //                 navigate('/dashboard'); // ✅ redirect to dashboard
+// // //             } else {
+// // //                 alert(data.error || 'Login failed');
+// // //             }
+// // //         } catch (err) {
+// // //             alert('Login failed: ' + err.message);
+// // //         }
+// // //     };
+
+// // //     return (
+// // //         <form style={styles.form} onSubmit={handleSubmit}>
+// // //             <label>Email:</label>
+// // //             <input type="email" placeholder="Enter Email" style={styles.input} />
+
+// // //             <label>Password:</label>
+// // //             <input type="password" placeholder="Enter Password" style={styles.input} />
+
+// // //             <button type="submit" style={styles.button}>Login</button>
+
+// // //             <p>
+// // //                 Don't have an account? <Link to="/signup">Sign up</Link>
+// // //             </p>
+// // //         </form>
+// // //     );
+// // // };
+
+// // // const styles = {
+// // //     form: {
+// // //         display: 'flex',
+// // //         flexDirection: 'column',
+// // //         gap: '1rem',
+// // //         textAlign: 'left',
+// // //     },
+// // //     input: {
+// // //         padding: '0.5rem',
+// // //         backgroundColor: '#777',
+// // //         color: '#fff',
+// // //         border: 'none',
+// // //         borderRadius: '4px',
+// // //     },
+// // //     button: {
+// // //         backgroundColor: '#0000FF',
+// // //         color: '#fff',
+// // //         border: 'none',
+// // //         borderRadius: '4px',
+// // //         padding: '0.5rem',
+// // //         cursor: 'pointer',
+// // //     },
+// // //     linkText: {
+// // //         marginTop: '1rem',
+// // //         fontSize: '0.9rem',
+// // //     }
+// // // };
+
+// // // export default LoginForm;
 
 // // import React from 'react';
 // // import { Link, useNavigate } from 'react-router-dom';
 
 // // const LoginForm = () => {
-// //     const navigate = useNavigate();
+// //   const navigate = useNavigate();
 
-// //     const handleSubmit = async (e) => {
-// //         e.preventDefault();
-// //         const email = e.target[0].value;
-// //         const password = e.target[1].value;
+// //   const handleSubmit = async (e) => {
+// //     e.preventDefault();
+// //     const email = e.target[0].value;
+// //     const password = e.target[1].value;
 
-// //         try {
-// //             const res = await fetch('http://localhost:5000/api/auth/login', {
-// //                 method: 'POST',
-// //                 headers: { 'Content-Type': 'application/json' },
-// //                 body: JSON.stringify({
-// //                     admin_email: email,
-// //                     admin_password: password
-// //                 })
-// //             });
+// //     try {
+// //       const res = await fetch('http://localhost:5000/api/auth/login', {
+// //         method: 'POST',
+// //         headers: { 'Content-Type': 'application/json' },
+// //         body: JSON.stringify({
+// //           admin_email: email,
+// //           admin_password: password
+// //         })
+// //       });
 
-// //             const data = await res.json();
+// //       const data = await res.json();
 
-// //             if (res.ok) {
-// //                 alert('Login successful');
-// //                 navigate('/dashboard'); // ✅ redirect to dashboard
-// //             } else {
-// //                 alert(data.error || 'Login failed');
-// //             }
-// //         } catch (err) {
-// //             alert('Login failed: ' + err.message);
+// //       if (res.ok) {
+// //         // ✅ Store data wrapped in { admin: {...} } so frontend can use admin.admin_role
+// //         localStorage.setItem('admin', JSON.stringify({ admin: data }));
+// //         alert('Login successful');
+
+// //         // Optional: redirect based on role
+// //         if (data.admin_role === 'superadmin') {
+// //           navigate('/admin-users');
+// //         } else {
+// //           navigate('/dashboard');
 // //         }
-// //     };
+// //       } else {
+// //         alert(data.error || 'Login failed');
+// //       }
+// //     } catch (err) {
+// //       alert('Login failed: ' + err.message);
+// //     }
+// //   };
 
-// //     return (
-// //         <form style={styles.form} onSubmit={handleSubmit}>
-// //             <label>Email:</label>
-// //             <input type="email" placeholder="Enter Email" style={styles.input} />
+// //   return (
+// //     <form style={styles.form} onSubmit={handleSubmit}>
+// //       <label>Email:</label>
+// //       <input type="email" placeholder="Enter Email" style={styles.input} required />
 
-// //             <label>Password:</label>
-// //             <input type="password" placeholder="Enter Password" style={styles.input} />
+// //       <label>Password:</label>
+// //       <input type="password" placeholder="Enter Password" style={styles.input} required />
 
-// //             <button type="submit" style={styles.button}>Login</button>
+// //       <button type="submit" style={styles.button}>Login</button>
 
-// //             <p>
-// //                 Don't have an account? <Link to="/signup">Sign up</Link>
-// //             </p>
-// //         </form>
-// //     );
+// //       <p style={styles.linkText}>
+// //         Don't have an account? <Link to="/signup">Sign up</Link> | <Link to="/forget-password">Forgot Password?</Link>
+// //       </p>
+// //     </form>
+// //   );
 // // };
 
 // // const styles = {
-// //     form: {
-// //         display: 'flex',
-// //         flexDirection: 'column',
-// //         gap: '1rem',
-// //         textAlign: 'left',
-// //     },
-// //     input: {
-// //         padding: '0.5rem',
-// //         backgroundColor: '#777',
-// //         color: '#fff',
-// //         border: 'none',
-// //         borderRadius: '4px',
-// //     },
-// //     button: {
-// //         backgroundColor: '#0000FF',
-// //         color: '#fff',
-// //         border: 'none',
-// //         borderRadius: '4px',
-// //         padding: '0.5rem',
-// //         cursor: 'pointer',
-// //     },
-// //     linkText: {
-// //         marginTop: '1rem',
-// //         fontSize: '0.9rem',
-// //     }
+// //   form: {
+// //     display: 'flex',
+// //     flexDirection: 'column',
+// //     gap: '1rem',
+// //     textAlign: 'left',
+// //   },
+// //   input: {
+// //     padding: '0.5rem',
+// //     backgroundColor: '#777',
+// //     color: '#fff',
+// //     border: 'none',
+// //     borderRadius: '4px',
+// //   },
+// //   button: {
+// //     backgroundColor: '#0000FF',
+// //     color: '#fff',
+// //     border: 'none',
+// //     borderRadius: '4px',
+// //     padding: '0.5rem',
+// //     cursor: 'pointer',
+// //   },
+// //   linkText: {
+// //     marginTop: '1rem',
+// //     fontSize: '0.9rem',
+// //     textAlign: 'center',
+// //   }
 // // };
 
 // // export default LoginForm;
@@ -155,16 +245,11 @@
 //       const data = await res.json();
 
 //       if (res.ok) {
-//         // ✅ Store data wrapped in { admin: {...} } so frontend can use admin.admin_role
+//         // ✅ Save to localStorage as { admin: data }
 //         localStorage.setItem('admin', JSON.stringify({ admin: data }));
-//         alert('Login successful');
 
-//         // Optional: redirect based on role
-//         if (data.admin_role === 'superadmin') {
-//           navigate('/admin-users');
-//         } else {
-//           navigate('/dashboard');
-//         }
+//         alert('Login successful');
+//         navigate('/dashboard'); // ✅ Redirect everyone to dashboard
 //       } else {
 //         alert(data.error || 'Login failed');
 //       }
@@ -191,12 +276,7 @@
 // };
 
 // const styles = {
-//   form: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//     gap: '1rem',
-//     textAlign: 'left',
-//   },
+//   form: { display: 'flex', flexDirection: 'column', gap: '1rem', textAlign: 'left' },
 //   input: {
 //     padding: '0.5rem',
 //     backgroundColor: '#777',
@@ -236,20 +316,14 @@ const LoginForm = () => {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          admin_email: email,
-          admin_password: password
-        })
+        body: JSON.stringify({ admin_email: email, admin_password: password })
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Save to localStorage as { admin: data }
-        localStorage.setItem('admin', JSON.stringify({ admin: data }));
-
         alert('Login successful');
-        navigate('/dashboard'); // ✅ Redirect everyone to dashboard
+        navigate('/dashboard', { state: { admin_email: email, admin_password: password } });
       } else {
         alert(data.error || 'Login failed');
       }
@@ -300,4 +374,3 @@ const styles = {
 };
 
 export default LoginForm;
-
