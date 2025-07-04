@@ -101,6 +101,7 @@ import dashboardRoutes from './routes/dashboard.routes';
 import adminRoutes from './routes/admin.routes';
 import authRoutes from './routes/auth.routes';
 import taxDeductionRoutes from './routes/taxDeduction.routes';
+import userDonationsRoutes from './routes/userDonations.routes';
 
 dotenv.config();
 
@@ -119,6 +120,7 @@ app.use('/api/admin', adminRoutes); // ✅ includes /reset-password
 app.use('/api/auth', authRoutes);
 app.use('/api', dashboardRoutes);
 app.use('/api', taxDeductionRoutes);
+app.use('/api/user-donations', userDonationsRoutes);
 
 connect_db();
 
