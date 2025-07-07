@@ -1,63 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from '../../common/Sidebar';
-import UserDonationsTable from '../components/UserDonationsTable';
-import UserDonationsSearchBar from '../components/UserDonationsSearchBar';
+import Navbar from '../components/Navbar';
+import DonateSection from '../components/DonateSection';
+import CharityCard from '../components/CharityCard';
 
 const UserDonationsPage = () => {
-  const [donations, setDonations] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [adminData, setAdminData] = useState(null);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { admin_email, admin_password } = location.state || {};
+  const [charities, setCharities] = useState([]);
 
   useEffect(() => {
-    if (!admin_email || !admin_password) {
-      navigate('/login');
-      return;
-    }
-
-    fetch('http://localhost:5000/api/auth/me', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_email, admin_password }),
-    })
+    fetch('http://localhost:5000/api/user-donations')
       .then((res) => res.json())
       .then((data) => {
-        if (!data || !data.role) {
-          navigate('/login');
-        } else {
-          setAdminData(data);
-
-          fetch('http://localhost:5000/api/user-donations')
-            .then((res) => res.json())
-            .then((data) => setDonations(data))
-            .catch((err) => {
-              console.error('Failed to fetch donations:', err);
-              setDonations([]);
-            });
-        }
+        console.log('✅ Charities fetched:', data);
+        setCharities(data);
       })
-      .catch(() => navigate('/login'));
-  }, [admin_email, admin_password, navigate]);
-
-  const filtered = donations.filter((d) =>
-    d.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    d.campaign?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      .catch((err) => {
+        console.error('❌ Failed to fetch Charities:', err);
+        setCharities([]);
+      });
+  }, []);
 
   return (
-    <div style={{ display: 'flex' }}>
-      <Sidebar admin_email={admin_email} admin_password={admin_password} />
-      <div style={{ flex: 1, padding: '20px' }}>
-        <h2>User Donations</h2>
-        <UserDonationsSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <UserDonationsTable donations={filtered} />
+    <div>
+      <Navbar />
+      <DonateSection />
+      <div style={styles.container}>
+        {charities.map((charity, index) => (
+          <div key={index} style={styles.cardWrapper}>
+            <CharityCard charity={charity} />
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
+const styles = {
+  container: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gap: '30px',
+    padding: '40px',
+    justifyItems: 'center',
+  },
+  cardWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+};
+
 export default UserDonationsPage;
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import UserDonationsTable from '../components/UserDonationsTable';
+// import UserDonationsSearchBar from '../components/UserDonationsSearchBar';
+
+// const UserDonationsPage = () => {
+//   const [donations, setDonations] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const { admin_email, admin_password } = location.state || {};
+
+//     if (!admin_email || !admin_password) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     fetch('http://localhost:5000/api/user-donations')
+//       .then((res) => res.json())
+//       .then((data) => {
+//         console.log('✅ Donations fetched:', data);
+//         setDonations(data);
+//       })
+//       .catch((err) => {
+//         console.error('❌ Failed to fetch donations:', err);
+//         setDonations([]);
+//       });
+//   }, [location, navigate]);
+
+//   const filteredDonations = donations.filter((donation) =>
+//     donation.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//     donation.campaign?.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
+
+//   return (
+//     <div style={{ padding: '20px' }}>
+//       <h2>User Donations</h2>
+//       <UserDonationsSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+//       <UserDonationsTable donations={filteredDonations} />
+//     </div>
+//   );
+// };
+
+// export default UserDonationsPage;

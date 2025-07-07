@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import express from 'express';
 import { getUserDonations } from '../controllers/userDonations.controller';
 
-const router = Router();
+const router = express.Router();
 
 router.get('/', getUserDonations);
 

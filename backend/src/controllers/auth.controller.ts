@@ -204,8 +204,12 @@
 //   }
 // };
 
+// import { Request, Response } from 'express';
+// import Admin from '../models/admin.model';
+
 import { Request, Response } from 'express';
-import Admin from '../models/admin.model';
+import  Admin  from '../models/admin.model';
+import  User  from '../models/user.model';
 
 // // ✅ Login controller
 // export const loginUser = async (req: Request, res: Response) => {
@@ -237,45 +241,109 @@ import Admin from '../models/admin.model';
 
 
 
+// export const loginUser = async (req: Request, res: Response) => {
+//   const { admin_email, admin_password } = req.body;
+
+//   // 🔍 Normalize email to lowercase
+//   const normalizedEmail = admin_email.toLowerCase();
+
+//   // ✅ Debug logs
+//   console.log('EMAIL:', normalizedEmail);
+//   console.log('PASSWORD:', admin_password);
+
+//   try {
+//     const admin = await Admin.findOne({ where: { admin_email: normalizedEmail } });
+
+//     // ✅ Log DB result
+//     console.log('USER FOUND:', admin);
+
+//     if (!admin) {
+//       return res.status(401).json({ error: 'Invalid email or password' });
+//     }
+
+//     if (admin.admin_password !== admin_password) {
+//       return res.status(401).json({ error: 'Invalid email or password' });
+//     }
+
+//     return res.json({
+//       message: 'Login successful',
+//       admin_user_id: admin.admin_user_id,
+//       admin_name: admin.admin_name,
+//       admin_email: admin.admin_email,
+//       admin_phone: admin.admin_phone,
+//       admin_role: admin.admin_role
+//     });
+
+
+//   } catch (error) {
+//     console.error('Login error:', error);
+//     return res.status(500).json({ error: 'Login failed' });
+//   }
+// };
+
+
+
+
 export const loginUser = async (req: Request, res: Response) => {
-  const { admin_email, admin_password } = req.body;
+  const email = req.body.admin_email || req.body.email;
+  const password = req.body.admin_password || req.body.password;
 
-  // 🔍 Normalize email to lowercase
-  const normalizedEmail = admin_email.toLowerCase();
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
 
-  // ✅ Debug logs
+  const normalizedEmail = email.toLowerCase();
   console.log('EMAIL:', normalizedEmail);
-  console.log('PASSWORD:', admin_password);
+  console.log('PASSWORD:', password);
 
   try {
+    // 🔍 Try admin login
     const admin = await Admin.findOne({ where: { admin_email: normalizedEmail } });
 
-    // ✅ Log DB result
-    console.log('USER FOUND:', admin);
+    if (admin) {
+      if (admin.admin_password !== password) {
+        return res.status(401).json({ error: 'Invalid password' });
+      }
 
-    if (!admin) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.json({
+        message: 'Login successful (admin)',
+        type: 'admin',
+        admin_user_id: admin.admin_user_id,
+        admin_name: admin.admin_name,
+        admin_email: admin.admin_email,
+        admin_phone: admin.admin_phone,
+        admin_role: admin.admin_role,
+      });
     }
 
-    if (admin.admin_password !== admin_password) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+    // 🔍 Try user login if not found in admin
+    const user = await User.findOne({ where: { user_email: normalizedEmail } });
+
+    if (user) {
+      if (user.user_password !== password) {
+        return res.status(401).json({ error: 'Invalid password' });
+      }
+
+      return res.json({
+        message: 'Login successful (user)',
+        type: 'user',
+        user_id: user.user_id,
+        user_name: user.user_name,
+        user_email: user.user_email,
+        user_phone: user.user_phone,
+        user_role: user.user_role,
+      });
     }
 
-    return res.json({
-      message: 'Login successful',
-      admin_user_id: admin.admin_user_id,
-      admin_name: admin.admin_name,
-      admin_email: admin.admin_email,
-      admin_phone: admin.admin_phone,
-      admin_role: admin.admin_role
-    });
-
+    // ❌ Not found in either table
+    return res.status(401).json({ error: 'Invalid email or password' });
 
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'Login failed' });
   }
 };
+
 
 
 // ✅ Signup controller
