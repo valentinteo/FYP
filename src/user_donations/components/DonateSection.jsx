@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-const DonateSection = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('charities');
+const DonateSection = ({ searchTerm, setSearchTerm }) => {
+  const [activeTab, setActiveTab] = React.useState('charities');
 
   return (
     <div style={styles.wrapper}>
@@ -13,14 +12,14 @@ const DonateSection = () => {
       </p>
 
       <div style={styles.searchWrapper}>
-        <label htmlFor="search" style={styles.searchLabel}>Search charities or campaigns</label>
+        <label htmlFor="search" style={styles.searchLabel}>Search charities</label>
         <div style={styles.searchBar}>
           <input
             id="search"
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search for a charity or a cause close to your heart"
+            placeholder="Search for a charity"
             style={styles.input}
           />
           <button style={styles.searchButton}>

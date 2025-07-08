@@ -5,29 +5,30 @@ import CharityCard from '../components/CharityCard';
 
 const UserDonationsPage = () => {
   const [charities, setCharities] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:5000/api/user-donations')
       .then((res) => res.json())
-      .then((data) => {
-        console.log('✅ Charities fetched:', data);
-        setCharities(data);
-      })
+      .then((data) => setCharities(data))
       .catch((err) => {
-        console.error('❌ Failed to fetch Charities:', err);
+        console.error('❌ Failed to fetch charities:', err);
         setCharities([]);
       });
   }, []);
 
+  const filteredCharities = charities.filter((charity) =>
+    charity.charity_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    charity.charity_description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <Navbar />
-      <DonateSection />
-      <div style={styles.container}>
-        {charities.map((charity, index) => (
-          <div key={index} style={styles.cardWrapper}>
-            <CharityCard charity={charity} />
-          </div>
+      <DonateSection searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <div style={styles.grid}>
+        {filteredCharities.map((charity) => (
+          <CharityCard key={charity.charity_id} charity={charity} />
         ))}
       </div>
     </div>
@@ -35,20 +36,17 @@ const UserDonationsPage = () => {
 };
 
 const styles = {
-  container: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '30px',
-    padding: '40px',
-    justifyItems: 'center',
-  },
-  cardWrapper: {
+  grid: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: '24px',
     justifyContent: 'center',
+    padding: '0 20px 60px',
   },
 };
 
 export default UserDonationsPage;
+
 
 
 

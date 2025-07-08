@@ -9,7 +9,7 @@ const Navbar = () => {
       <div style={styles.topRow}>
         <div style={styles.logoWrapper}>
           <img
-            src="/path/to/logo.png" // 🔁 Replace with actual logo path (e.g., /images/yumtap-logo.png)
+            src="/yumtap.png" 
             alt="YumTap Logo"
             style={styles.logoImage}
           />
@@ -32,7 +32,7 @@ const Navbar = () => {
       {/* Bottom Row */}
       <div style={styles.bottomRow}>
         <div style={styles.leftLinks}>
-          <Link to="/donate" style={styles.link}>Donate</Link>
+          <Link to="/user-donations" style={styles.link}>Donate</Link>
           <Link to="/volunteer" style={styles.link}>Volunteer</Link>
           <Link to="/collaborate" style={styles.link}>Collaborate</Link>
           <Link to="/fundraise" style={styles.link}>Fundraise</Link>

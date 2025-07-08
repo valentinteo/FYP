@@ -50,11 +50,12 @@ import DashboardPage from './dashboard/views/DashboardPage';
 import AdminUsersPage from './admin/views/AdminUsersPage';
 import DonationHistoryPage from './donations/views/DonationHistoryPage';
 import CharityManagementPage from './charities/views/CharityManagementPage';
+import CharityDetailsPage from './user_donations/views/CharityDetailsPage'; // ✅ Import this
 import TaxDeductionPage from './tax_deduction/views/TaxDeductionPage'; 
 import RequireSuperadmin from './admin/components/RequireSuperadmin';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ForgetPasswordPage from './login/views/ForgetPasswordPage';
-import UserDonationsPage from './user_donations/views/UserDonationsPage'; // ✅ Import this
+import UserDonationsPage from './user_donations/views/UserDonationsPage';
 
 function App() {
   return (
@@ -70,8 +71,9 @@ function App() {
         } />
         <Route path="/donations" element={<DonationHistoryPage />} />
         <Route path="/charity" element={<CharityManagementPage />} />
+        <Route path="/charity/:id" element={<CharityDetailsPage />} /> 
         <Route path="/tax-deduction" element={<TaxDeductionPage />} />
-        <Route path="/user-donations" element={<UserDonationsPage />} /> {/* ✅ Add this */}
+        <Route path="/user-donations" element={<UserDonationsPage />} /> 
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<LoginPage />} />
