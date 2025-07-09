@@ -24,7 +24,7 @@ const CharityDetailsPage = () => {
     <>
       <Navbar />
       <CharityProfileCard charity={charity} />
-      <DonationOptions/>
+      <DonationOptions charity={charity} />
     </>
   );
 };

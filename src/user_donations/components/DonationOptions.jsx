@@ -137,9 +137,6 @@ const styles = {
         gap: '0.5rem',
         position: 'relative',
     },
-    dollar: {
-        fontWeight: 'bold',
-    },
     amount: {
         fontSize: '1.5rem',
     },
@@ -209,24 +206,43 @@ const styles = {
         marginBottom: '1rem',
     },
     label: {
-        fontWeight: 'bold',
+        fontWeight: '600',
+        color: '#343a40',
         display: 'block',
-        marginBottom: '0.3rem',
+        marginBottom: '0.4rem',
+        fontSize: '1rem',
     },
+
     amountInputWrapper: {
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
+        border: '1px solid #dc3545', // red border like shown
+        borderRadius: '6px',
         overflow: 'hidden',
-        width: '180px',
+        width: '100%',
+        maxWidth: '320px',
+        backgroundColor: '#fff',
+        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
     },
+
     modalInput: {
-        padding: '0.5rem',
-        border: 'none',
-        outline: 'none',
         flex: 1,
+        border: 'none',
+        padding: '0.6rem 0.8rem',
+        fontSize: '1rem',
+        outline: 'none',
+        color: '#212529',
     },
+
+    dollar: {
+        backgroundColor: '#f8f9fa',
+        padding: '0.6rem 0.75rem',
+        borderRight: '1px solid #ccc',
+        color: '#495057',
+        fontWeight: 'bold',
+        fontSize: '1rem',
+    },
+
     modalButtons: {
         display: 'flex',
         justifyContent: 'flex-end',
@@ -248,6 +264,7 @@ const styles = {
         borderRadius: '20px',
         cursor: 'pointer',
     },
+
 };
 
 export default DonationOptions;
