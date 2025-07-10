@@ -24,7 +24,7 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
       charity_description,
       charity_UEN,
       charity_image: imagePath,
-      is_charity_featured: false, 
+      is_charity_featured: false,
     });
 
     res.status(201).json(newCharity);
@@ -33,7 +33,7 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
 
     res.status(500).json({
       error: 'Failed to add charity',
-      details: err.message || err.toString(), 
+      details: err.message || err.toString(),
     });
   }
 };
@@ -68,12 +68,7 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
 export const updateCharity = async (req: MulterRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const {
-      charity_name,
-      charity_description,
-      charity_UEN,
-      is_charity_featured
-    } = req.body;
+    const { charity_name, charity_description, charity_UEN, is_charity_featured } = req.body;
 
     const imagePath = req.file ? req.file.filename : undefined;
 
@@ -85,8 +80,8 @@ export const updateCharity = async (req: MulterRequest, res: Response) => {
     charity.charity_name = charity_name;
     charity.charity_description = charity_description;
     charity.charity_UEN = charity_UEN;
-    charity.is_charity_featured =
-      is_charity_featured === '1' || is_charity_featured === 'true' || is_charity_featured === 1;
+    if (imagePath) charity.charity_image = imagePath;
+    charity.is_charity_featured = is_charity_featured === '1' || is_charity_featured === 'true';
 
     if (imagePath) {
       charity.charity_image = imagePath;

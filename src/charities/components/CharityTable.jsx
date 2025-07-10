@@ -111,12 +111,31 @@ const CharityTable = ({ charities, onEdit, onDelete }) => {
     return <p style={{ padding: '1rem', color: '#888' }}>No charity data available.</p>;
   }
 
-  const handleToggleFeatured = (charity) => {
+  const isFeatured = (value) => value === 1 || value === '1' || value === true;
+
+  const handleToggleFeatured = async (charity) => {
     const updatedCharity = {
       ...charity,
-      is_charity_featured: charity.is_charity_featured === 1 ? 0 : 1,
+      is_charity_featured: isFeatured(charity.is_charity_featured) ? 0 : 1,
     };
-    onEdit(updatedCharity);
+
+    try {
+      const formData = new FormData();
+      formData.append('charity_name', updatedCharity.charity_name);
+      formData.append('charity_description', updatedCharity.charity_description);
+      formData.append('charity_UEN', updatedCharity.charity_UEN);
+      formData.append('is_charity_featured', updatedCharity.is_charity_featured);
+
+      await fetch(`http://localhost:5000/api/charities/${updatedCharity.charity_id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      onEdit(); // Refresh charity list or data
+    } catch (err) {
+      console.error('❌ Failed to toggle featured status:', err);
+      alert('Failed to update featured status.');
+    }
   };
 
   return (
@@ -144,20 +163,20 @@ const CharityTable = ({ charities, onEdit, onDelete }) => {
               <span style={{ color: '#aaa' }}>No Image</span>
             )}
           </div>
+
           <div style={{ ...colStyle, flex: 2 }}>{charity.charity_name}</div>
           <div style={{ ...colStyle, flex: 3 }}>{charity.charity_description}</div>
           <div style={{ ...colStyle, flex: 2 }}>{charity.charity_UEN}</div>
 
-          {/* 🔁 Featured toggle */}
           <div style={{ ...colStyle, flex: 1 }}>
             <label>
               <input
                 type="checkbox"
-                checked={charity.is_charity_featured === 1}
+                checked={isFeatured(charity.is_charity_featured)}
                 onChange={() => handleToggleFeatured(charity)}
               />
               <span style={{ marginLeft: '8px' }}>
-                {charity.is_charity_featured === 1 ? 'Yes' : 'No'}
+                {isFeatured(charity.is_charity_featured) ? 'Yes' : 'No'}
               </span>
             </label>
           </div>
