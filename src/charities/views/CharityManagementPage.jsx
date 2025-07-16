@@ -425,7 +425,7 @@ import CharityTable from '../components/CharityTable';
 import AddCharityModal from '../components/AddCharityModal';
 import EditCharityModal from '../components/EditCharityModal';
 import SearchBar from '../components/Searchbar';
-import { toast } from 'react-toastify'; 
+import { toast } from 'react-toastify';
 
 const CharityManagementPage = () => {
   const [charities, setCharities] = useState([]);
@@ -492,9 +492,6 @@ const CharityManagementPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm('Are you sure you want to delete this charity?');
-    if (!confirm) return;
-
     try {
       const res = await fetch(`http://localhost:5000/api/charities/${id}`, {
         method: 'DELETE',
@@ -502,7 +499,7 @@ const CharityManagementPage = () => {
 
       const result = await res.json();
       if (!res.ok) {
-        alert(`❌ Failed to delete charity: ${result.details || result.error}`);
+        toast.error(`❌ Failed to delete charity: ${result.details || result.error}`);
         return;
       }
 
@@ -512,6 +509,7 @@ const CharityManagementPage = () => {
       toast.error('Network error while deleting charity');
     }
   };
+
 
   const handleEditSaved = () => {
     setEditingCharity(null);
