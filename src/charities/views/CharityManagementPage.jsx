@@ -425,6 +425,7 @@ import CharityTable from '../components/CharityTable';
 import AddCharityModal from '../components/AddCharityModal';
 import EditCharityModal from '../components/EditCharityModal';
 import SearchBar from '../components/Searchbar';
+import { toast } from 'react-toastify'; 
 
 const CharityManagementPage = () => {
   const [charities, setCharities] = useState([]);
@@ -508,7 +509,7 @@ const CharityManagementPage = () => {
       fetchCharities();
     } catch (err) {
       console.error('❌ Failed to delete charity:', err);
-      alert('Network error while deleting charity');
+      toast.error('Network error while deleting charity');
     }
   };
 
@@ -530,7 +531,7 @@ const CharityManagementPage = () => {
       <div style={{ marginLeft: '260px', flex: 1, padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h2>MANAGE CHARITY ORGANIZATION</h2>
-          {adminData.admin_role === 'SuperAdmin' && (
+          {adminData.admin_role?.toLowerCase() === 'superadmin' && (
             <button
               onClick={() => setShowAddModal(true)}
               style={{ backgroundColor: '#0000FF', color: 'white', padding: '0.5rem 1rem' }}

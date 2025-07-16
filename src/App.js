@@ -56,10 +56,12 @@ import RequireSuperadmin from './admin/components/RequireSuperadmin';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ForgetPasswordPage from './login/views/ForgetPasswordPage';
 import UserDonationsPage from './user_donations/views/UserDonationsPage';
+import ToastProvider from './common/ToastProvider';
 
 function App() {
   return (
     <Router>
+      <ToastProvider />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
