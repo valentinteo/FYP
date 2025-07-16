@@ -24,7 +24,7 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
       charity_description,
       charity_UEN,
       charity_image: imagePath,
-      is_charity_featured: false, 
+      is_charity_featured: false,
     });
 
     res.status(201).json(newCharity);
@@ -33,15 +33,43 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
 
     res.status(500).json({
       error: 'Failed to add charity',
-      details: err.message || err.toString(), 
+      details: err.message || err.toString(),
     });
   }
 };
 
+// export const updateCharity = async (req: MulterRequest, res: Response) => {
+//   try {
+//     const { id } = req.params;
+//     const { charity_name, charity_description, charity_UEN } = req.body;
+//     const imagePath = req.file ? req.file.filename : undefined;
+
+//     const charity = await Charity.findByPk(id);
+//     if (!charity) {
+//       return res.status(404).json({ error: 'Charity not found' });
+//     }
+
+//     charity.charity_name = charity_name;
+//     charity.charity_description = charity_description;
+//     charity.charity_UEN = charity_UEN;
+//     if (imagePath) charity.charity_image = imagePath;
+
+//     await charity.save();
+//     res.json(charity);
+//   } catch (err: any) {
+//     console.error('🔥 Error while updating charity:', err);
+//     res.status(500).json({
+//       error: 'Failed to update charity',
+//       details: err.message || err.toString(),
+//     });
+//   }
+// };
+
 export const updateCharity = async (req: MulterRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { charity_name, charity_description, charity_UEN } = req.body;
+    const { charity_name, charity_description, charity_UEN, is_charity_featured } = req.body;
+
     const imagePath = req.file ? req.file.filename : undefined;
 
     const charity = await Charity.findByPk(id);
@@ -53,6 +81,11 @@ export const updateCharity = async (req: MulterRequest, res: Response) => {
     charity.charity_description = charity_description;
     charity.charity_UEN = charity_UEN;
     if (imagePath) charity.charity_image = imagePath;
+    charity.is_charity_featured = is_charity_featured === '1' || is_charity_featured === 'true';
+
+    if (imagePath) {
+      charity.charity_image = imagePath;
+    }
 
     await charity.save();
     res.json(charity);
@@ -64,6 +97,7 @@ export const updateCharity = async (req: MulterRequest, res: Response) => {
     });
   }
 };
+
 
 export const deleteCharity = async (req: ExpressRequest, res: Response) => {
   try {

@@ -652,6 +652,110 @@
 
 // export default AdminUsersPage;
 
+// import React, { useState, useEffect } from 'react';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import UserTable from '../components/AdminTable';
+// import Sidebar from '../../common/Sidebar';
+// import AddAdminModal from '../components/AddAdminModal';
+
+// const AdminUsersPage = () => {
+//   const [showModal, setShowModal] = useState(false);
+//   const [formData, setFormData] = useState({
+//     admin_name: '',
+//     admin_email: '',
+//     admin_password: '',
+//     admin_role: '',
+//     admin_phone: '',
+//   });
+//   const [adminData, setAdminData] = useState(null);
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   // ✅ Authenticate on mount
+//   useEffect(() => {
+//     const { admin_email, admin_password } = location.state || {};
+
+//     if (!admin_email || !admin_password) {
+//       navigate('/login');
+//       return;
+//     }
+
+//     fetch('http://localhost:5000/api/auth/me', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ admin_email, admin_password })
+//     })
+//       .then(res => res.json())
+//       .then(data => {
+//         if (data.admin_role !== 'SuperAdmin') {
+//           navigate('/unauthorized', {
+//             state: {
+//               admin_email,
+//               admin_password,
+//               admin_role: data.admin_role
+//             }
+//           });
+//         } else {
+//           setAdminData(data);
+//         }
+//       })
+//       .catch(err => {
+//         console.error('Auth error:', err);
+//         navigate('/login');
+//       });
+//   }, [location.state, navigate]);
+
+//   const handleOpenModal = () => setShowModal(true);
+//   const handleCloseModal = () => {
+//     setShowModal(false);
+//     setFormData({
+//       admin_name: '',
+//       admin_email: '',
+//       admin_password: '',
+//       admin_role: '',
+//       admin_phone: '',
+//     });
+//   };
+
+//   if (adminData === null) return <div>Loading...</div>;
+
+//   return (
+//     <div style={{ display: 'flex' }}>
+//       <Sidebar />
+//       <div style={{ marginLeft: '260px', padding: '2rem', width: '100%' }}>
+//         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//           <h2 style={{ margin: 0 }}>Admin Users & Roles</h2>
+//           <button
+//             onClick={handleOpenModal}
+//             style={{
+//               padding: '0.5rem 1rem',
+//               backgroundColor: '#0000FF',
+//               color: 'white',
+//               border: 'none',
+//               borderRadius: '4px',
+//               cursor: 'pointer'
+//             }}
+//           >
+//             + Add Admin
+//           </button>
+//         </div>
+
+//         <UserTable />
+
+//         {showModal && (
+//           <AddAdminModal
+//             formData={formData}
+//             setFormData={setFormData}
+//             onClose={handleCloseModal}
+//           />
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminUsersPage;
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserTable from '../components/AdminTable';
@@ -687,7 +791,10 @@ const AdminUsersPage = () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.admin_role !== 'SuperAdmin') {
+        console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
+
+        // ✅ Case-insensitive + null-safe check
+        if (!data.admin_role || data.admin_role.toLowerCase() !== 'superadmin') {
           navigate('/unauthorized', {
             state: {
               admin_email,
@@ -755,3 +862,4 @@ const AdminUsersPage = () => {
 };
 
 export default AdminUsersPage;
+
