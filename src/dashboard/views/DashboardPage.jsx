@@ -73,18 +73,35 @@ const DashboardPage = () => {
   if (adminData === null) return <div>Loading...</div>;
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', overflowX: 'hidden' }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: '1rem' }}>
+      <div style={{
+        flex: 1,
+        padding: '2rem',
+        paddingLeft: '280px', // ← Match your Sidebar's width
+        boxSizing: 'border-box',
+        maxWidth: '100vw',
+        overflowX: 'hidden'
+      }}>
         <h2>DASHBOARD</h2>
-
-        <div style={{ display: 'flex', marginLeft: '240px', padding: '1rem' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '1rem',
+          padding: '1rem'
+        }}>
           <TotalDonationsCard />
           <TotalDonorsCard />
           <FundraisingProgressCard />
         </div>
 
-        <div style={{ display: 'flex', marginLeft: '240px', padding: '1rem' }}>
+      {/* Charts Row */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 2fr',
+        gap: '1rem',
+        marginTop: '2rem'
+      }}>
           <div style={{ flex: 1 }}>
             <PieChartPlaceholder />
           </div>
