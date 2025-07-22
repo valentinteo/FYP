@@ -425,6 +425,7 @@ import CharityTable from '../components/CharityTable';
 import AddCharityModal from '../components/AddCharityModal';
 import EditCharityModal from '../components/EditCharityModal';
 import SearchBar from '../components/Searchbar';
+import { toast } from 'react-toastify';
 
 const CharityManagementPage = () => {
   const [charities, setCharities] = useState([]);
@@ -491,9 +492,6 @@ const CharityManagementPage = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm('Are you sure you want to delete this charity?');
-    if (!confirm) return;
-
     try {
       const res = await fetch(`http://localhost:5000/api/charities/${id}`, {
         method: 'DELETE',
@@ -501,16 +499,17 @@ const CharityManagementPage = () => {
 
       const result = await res.json();
       if (!res.ok) {
-        alert(`❌ Failed to delete charity: ${result.details || result.error}`);
+        toast.error(`❌ Failed to delete charity: ${result.details || result.error}`);
         return;
       }
 
       fetchCharities();
     } catch (err) {
       console.error('❌ Failed to delete charity:', err);
-      alert('Network error while deleting charity');
+      toast.error('Network error while deleting charity');
     }
   };
+
 
   const handleEditSaved = () => {
     setEditingCharity(null);
@@ -530,7 +529,7 @@ const CharityManagementPage = () => {
       <div style={{ marginLeft: '260px', flex: 1, padding: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <h2>MANAGE CHARITY ORGANIZATION</h2>
-          {adminData.admin_role === 'SuperAdmin' && (
+          {adminData.admin_role?.toLowerCase() === 'superadmin' && (
             <button
               onClick={() => setShowAddModal(true)}
               style={{ backgroundColor: '#0000FF', color: 'white', padding: '0.5rem 1rem' }}

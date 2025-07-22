@@ -1,5 +1,9 @@
 import { Request as ExpressRequest, Response } from 'express';
 import Charity from '../models/charity.model';
+import { sendCharityNotification } from '../utils/email';
+import User from '../models/user.model'; // Assuming user model is here
+
+
 
 interface MulterRequest extends ExpressRequest {
   file?: Express.Multer.File;
@@ -14,6 +18,32 @@ export const getCharities = async (_req: ExpressRequest, res: Response) => {
   }
 };
 
+// export const addCharity = async (req: MulterRequest, res: Response) => {
+//   try {
+//     const { charity_name, charity_description, charity_UEN } = req.body;
+//     const imagePath = req.file ? req.file.filename : '';
+
+//     const newCharity = await Charity.create({
+//       charity_name,
+//       charity_description,
+//       charity_UEN,
+//       charity_image: imagePath,
+//       is_charity_featured: false,
+//     });
+
+//     res.status(201).json(newCharity);
+//   } catch (err: any) {
+//     console.error('🔥 Error while adding charity:', err);
+
+//     res.status(500).json({
+//       error: 'Failed to add charity',
+//       details: err.message || err.toString(),
+//     });
+//   }
+// };
+
+
+
 export const addCharity = async (req: MulterRequest, res: Response) => {
   try {
     const { charity_name, charity_description, charity_UEN } = req.body;
@@ -27,6 +57,13 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
       is_charity_featured: false,
     });
 
+    // Fetch all user emails
+    const users = await User.findAll();
+    const emails = users.map((user) => user.user_email); // adjust field if needed
+
+    // Send email notification
+    await sendCharityNotification(emails, charity_name);
+
     res.status(201).json(newCharity);
   } catch (err: any) {
     console.error('🔥 Error while adding charity:', err);
@@ -37,6 +74,7 @@ export const addCharity = async (req: MulterRequest, res: Response) => {
     });
   }
 };
+
 
 // export const updateCharity = async (req: MulterRequest, res: Response) => {
 //   try {

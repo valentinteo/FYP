@@ -99,11 +99,16 @@ import RequireSuperadmin from './admin/components/RequireSuperadmin';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ForgetPasswordPage from './login/views/ForgetPasswordPage';
 import UserDonationsPage from './user_donations/views/UserDonationsPage';
+<<<<<<< HEAD
 import ApproveAdminsPage from './admin/views/ApproveAdminsPage.jsx'; // ✅ added
+=======
+import ToastProvider from './common/ToastProvider';
+>>>>>>> 568ea33b179470b8880c4161d14f055764129339
 
 function App() {
   return (
     <Router>
+      <ToastProvider />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
