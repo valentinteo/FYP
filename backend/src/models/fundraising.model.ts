@@ -25,8 +25,8 @@ export default class Fundraising extends Model {
     fundraising_goal_amount!: number;
 
     @Column({ type: DataType.DATE })
-    fundraising_start_datetime!: Date;
+    fundraising_start_datetime!: string;
 
     @Column({ type: DataType.DATE })
-    fundraising_end_datetime!: Date;
+    fundraising_end_datetime!: string;
 }

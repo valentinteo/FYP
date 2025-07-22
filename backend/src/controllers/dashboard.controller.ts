@@ -61,28 +61,70 @@ export const TotalDonors = async (req: Request, res: Response) => {
   }
 };
 
-export const FundraisingProgress = async (req: Request, res: Response) => {
+
+export const getFundraisingProgress = async (req: Request, res: Response) => {
   try {
-    // Get total fundraising goal
-    const fundraising = await Fundraising.findOne({
-      attributes: ['fundraising_goal_amount']
+    // Get the latest fundraising campaign
+    const latestFundraising = await Fundraising.findOne({
+      order: [['fundraising_id', 'DESC']],
     });
 
-    // Get total donations
-    const donations = await Donation.findAll({
-      attributes: [
-        [Sequelize.fn('SUM', Sequelize.col('donation_amount')), 'total_donations']
-      ]
-    });
+    if (!latestFundraising) {
+      return res.status(404).json({ error: 'No fundraising campaign found' });
+    }
 
-    const goal = fundraising?.fundraising_goal_amount || 0;
-    const total = donations[0]?.dataValues?.total_donations || 0;
+    // ✅ Sum all donations in the database
+    const totalDonations = await Donation.sum('donation_amount');
+    const goal = latestFundraising.fundraising_goal_amount || 0;
+    const total = totalDonations || 0;
 
+    // ✅ Calculate overall fundraising progress
     const progress = goal > 0 ? ((total / goal) * 100).toFixed(1) : '0';
 
     res.json({ progress: `${progress}%` });
-  } catch (err) {
-    console.error('Error fetching fundraising progress:', err);
+  } catch (error) {
+    console.error('🔴 Error fetching fundraising progress:', error);
     res.status(500).json({ error: 'Failed to fetch fundraising progress' });
+  }
+};
+
+export const getLatestFundraising = async (req: Request, res: Response) => {
+  try {
+    const latest = await Fundraising.findOne({
+      order: [['fundraising_id', 'DESC']], // ✅ not createdAt
+    });
+    if (!latest) {
+      return res.status(404).json({ error: 'No fundraising campaign found' });
+    }
+    res.json(latest);
+  } catch (error) {
+    console.error('Error fetching latest fundraising:', error);
+    res.status(500).json({ error: 'Failed to fetch fundraising data' });
+  }
+};
+
+
+
+
+export const updateFundraising = async (req: Request, res: Response) => {
+  try {
+    const { fundraising_id, ...updateFields } = req.body;
+
+    if (!fundraising_id) {
+      return res.status(400).json({ error: 'Missing fundraising_id' });
+    }
+
+    const [updated] = await Fundraising.update(updateFields, {
+      where: { fundraising_id },
+    });
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Fundraising not found or unchanged' });
+    }
+
+    res.json({ message: 'Fundraising updated successfully' });
+  } catch (error) {
+    console.error('Error updating fundraising:', error);
+    res.status(500).json({ error: 'Failed to update fundraising' });
   }
 };
