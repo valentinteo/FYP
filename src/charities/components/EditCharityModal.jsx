@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const EditCharityModal = ({ charity, onClose, onUpdated }) => {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ const EditCharityModal = ({ charity, onClose, onUpdated }) => {
       onUpdated();
     } catch (err) {
       console.error('Update failed:', err);
-      alert('Failed to update charity.');
+      toast.error('Failed to update charity.');
     }
   };
 

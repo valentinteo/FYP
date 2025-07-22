@@ -7,6 +7,7 @@ import {
   FaWhatsapp,
   FaTelegram,
 } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
 const CharityProfileCard = ({ charity }) => {
   const [showShareModal, setShowShareModal] = useState(false);
@@ -14,7 +15,7 @@ const CharityProfileCard = ({ charity }) => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shareUrl);
-    alert('Link copied!');
+    toast.success('Link copied!');
   };
 
   return (

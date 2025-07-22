@@ -53,7 +53,7 @@ const CharityManagementPage = () => {
       .then((data) => setCharities(data))
       .catch((err) => {
         console.error('❌ Failed to fetch charities:', err);
-        alert('Error loading charities');
+        toast.error('Error loading charities');
         setCharities([]);
       });
   };
@@ -61,7 +61,7 @@ const CharityManagementPage = () => {
   const handleCharityAdded = (error = null) => {
     setShowAddModal(false);
     if (error) {
-      alert(`❌ Failed to add charity: ${error}`);
+      toast.error(`❌ Failed to add charity: ${error}`);
     } else {
       fetchCharities();
     }

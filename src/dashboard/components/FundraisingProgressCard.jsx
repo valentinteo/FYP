@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import StatCard from './StatCard';
+import { toast } from 'react-toastify';
 
 const FundraisingProgressCard = () => {
   const [progress, setProgress] = useState('--');
+  const [totalDonations, setTotalDonations] = useState(0); // ✅ NEW
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [fundraising, setFundraising] = useState({
     fundraising_id: '',
@@ -13,7 +15,6 @@ const FundraisingProgressCard = () => {
     fundraising_end_datetime: '',
   });
 
-  // Helper to format date string to 'YYYY-MM-DD'
   const formatDate = (dt) => {
     if (!dt) return '';
     return new Date(dt).toISOString().split('T')[0];
@@ -21,27 +22,33 @@ const FundraisingProgressCard = () => {
 
   useEffect(() => {
     fetch('http://localhost:5000/api/fundraising/progress')
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setProgress(data.progress || '--%');
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('Error fetching fundraising progress:', err);
         setProgress('--%');
       });
 
     fetch('http://localhost:5000/api/fundraising/latest')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('📦 Response from /latest:', data);
-
+      .then(res => res.json())
+      .then(data => {
         setFundraising({
           ...data,
           fundraising_start_datetime: formatDate(data.fundraising_start_datetime),
           fundraising_end_datetime: formatDate(data.fundraising_end_datetime),
         });
       })
-      .catch((err) => console.error('Error fetching fundraising data:', err));
+      .catch(err => console.error('Error fetching fundraising data:', err));
+
+    // ✅ Fetch total donations
+    fetch('http://localhost:5000/api/donations/total')
+      .then(res => res.json())
+      .then(data => {
+        setTotalDonations(data.total_donations || 0); // ✅ use correct key
+      })
+      .catch(err => console.error('Error fetching total donations:', err));
   }, []);
 
   const handleChange = (e) => {
@@ -52,28 +59,34 @@ const FundraisingProgressCard = () => {
   };
 
   const handleSave = () => {
-    console.log('🟡 Submitting fundraising update with data:', fundraising);
+    const goalAmount = parseFloat(fundraising.fundraising_goal_amount);
+
+    // ✅ Check if goal is less than total donations
+    if (goalAmount < totalDonations) {
+      toast.error(`❌ Goal cannot be lower than total donations ($${totalDonations.toFixed(2)})`);
+      return;
+    }
 
     fetch('http://localhost:5000/api/fundraising/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(fundraising),
     })
-      .then((res) => {
+      .then(res => {
         if (!res.ok) {
-          return res.json().then((err) => {
+          return res.json().then(err => {
             throw new Error(err.error || 'Unknown error');
           });
         }
         return res.json();
       })
       .then(() => {
-        alert('Fundraising updated!');
+        toast.success('🎉 Fundraising updated successfully!');
         setIsModalOpen(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('🔴 Update failed:', err.message);
-        alert('Update failed');
+        toast.error('❌ Failed to update fundraising. Please try again.');
       });
   };
 
