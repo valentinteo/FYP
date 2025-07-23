@@ -128,3 +128,43 @@ export const updateFundraising = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to update fundraising' });
   }
 };
+
+
+export const addFundraising = async (req: Request, res: Response) => {
+  try {
+    const {
+      fundraising_charity_id,
+      fundraising_title,
+      fundraising_description,
+      fundraising_goal_amount,
+      fundraising_start_datetime,
+      fundraising_end_datetime,
+    } = req.body;
+
+    const newFundraising = await Fundraising.create({
+      fundraising_charity_id,
+      fundraising_title,
+      fundraising_description,
+      fundraising_goal_amount,
+      fundraising_start_datetime,
+      fundraising_end_datetime,
+    });
+
+    res.status(201).json(newFundraising);
+  } catch (err) {
+    console.error('Failed to add fundraising:', err);
+    res.status(500).json({ error: 'Failed to add fundraising' });
+  }
+};
+
+
+// fundraising.controller.ts
+export const deleteFundraising = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await Fundraising.destroy({ where: { fundraising_id: id } });
+    res.json({ message: 'Fundraising deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete fundraising.' });
+  }
+};
