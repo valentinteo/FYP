@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaTiktok, FaShoppingCart } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
@@ -9,7 +9,7 @@ const Navbar = () => {
       <div style={styles.topRow}>
         <div style={styles.logoWrapper}>
           <img
-            src="/yumtap.png" 
+            src="/yumtap.png"
             alt="YumTap Logo"
             style={styles.logoImage}
           />
@@ -40,8 +40,11 @@ const Navbar = () => {
           <Link to="/stories" style={styles.link}>Stories</Link>
         </div>
         <div style={styles.rightButtons}>
-          <Link to="/login" style={styles.link}>Log in</Link>
-          <Link to="/signup" style={styles.link}>Sign up</Link>
+          <Link to="/cart" style={{ ...styles.link, display: 'flex', alignItems: 'center' }}>
+            <FaShoppingCart size={18} style={{ marginRight: '6px' }} />
+            Cart
+          </Link>
+          <Link to="/login" style={styles.link}>Log out</Link>
         </div>
       </div>
     </nav>

@@ -94,7 +94,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { connect_db, sqlServerDb } from './database/connection';
-
+import session from 'express-session';
 import charityRoutes from './routes/charity.routes';
 import donationRoutes from './routes/donation.routes';
 import dashboardRoutes from './routes/dashboard.routes';
@@ -103,6 +103,7 @@ import authRoutes from './routes/auth.routes';
 import taxDeductionRoutes from './routes/taxDeduction.routes';
 import userDonationsRoutes from './routes/userDonations.routes';
 import charitiesRoutes from './routes/charities.routes';
+import cartRoutes from './routes/cart.routes';
 
 dotenv.config();
 
@@ -110,8 +111,24 @@ const app = express();
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false,         // only true if using HTTPS
+    httpOnly: true,
+    sameSite: 'lax'        // allow some cross-site cookies
+  }
+}));
 
 // ✅ API routes
 app.use('/api/charities', charityRoutes);
@@ -123,6 +140,7 @@ app.use('/api', dashboardRoutes);
 app.use('/api', taxDeductionRoutes);
 app.use('/api/user-donations', userDonationsRoutes);
 app.use('/api/charities', charitiesRoutes);
+app.use('/api/cart', cartRoutes);
 
 connect_db();
 

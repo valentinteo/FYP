@@ -1,18 +1,61 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const DonationOptions = ({ charity }) => {
-    console.log("Charity passed into DonationOptions:", charity);
     const [selected, setSelected] = useState(null);
     const [hovered, setHovered] = useState(null);
     const [customAmount, setCustomAmount] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [modalAmount, setModalAmount] = useState(0);
 
+    const navigate = useNavigate();
+
     const presetAmounts = [10, 60, 120, 220];
 
     const handleDonateNow = (amount) => {
         setModalAmount(amount);
         setShowModal(true);
+    };
+
+    const handleAddToCart = async (amount) => {
+        if (!charity?.charity_id) return;
+
+        try {
+            // ✅ Step 1: Check login session
+            const userRes = await fetch('http://localhost:5000/api/auth/me', {
+                method: 'POST',
+                credentials: 'include', // ✅ include session cookie
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!userRes.ok) throw new Error('User not authenticated');
+
+            await userRes.json(); // ✅ still consume the response even if unused
+
+            // ✅ Step 2: Add to cart
+            const payload = {
+                cartDonationQuantity: amount,
+                cartCharityId: charity.charity_id
+            };
+
+            const cartRes = await fetch('http://localhost:5000/api/cart', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (cartRes.ok) {
+                toast('Donation added to cart!');
+                navigate('/cart');
+            } else {
+                toast('Failed to add to cart');
+            }
+        } catch (err) {
+            console.error('Add to cart error:', err);
+            toast('Session expired or not logged in.');
+        }
     };
 
     return (
@@ -39,7 +82,9 @@ const DonationOptions = ({ charity }) => {
                         {hovered === amount && (
                             <div style={styles.actions}>
                                 <button style={styles.donateBtn} onClick={() => handleDonateNow(amount)}>Donate now</button>
-                                <button style={styles.secondaryBtn}>Add to cart</button>
+                                <button style={styles.secondaryBtn} onClick={() => handleAddToCart(amount)}>
+                                    Add to cart
+                                </button>
                             </div>
                         )}
                     </div>

@@ -392,6 +392,7 @@ const LoginForm = () => {
     try {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           admin_email: email,
@@ -406,7 +407,6 @@ const LoginForm = () => {
       if (res.ok) {
         alert('Login successful');
 
-        // 👇 Redirect by role
         if (data.admin_role) {
           navigate('/dashboard', {
             state: { admin_email: email, admin_password: password }

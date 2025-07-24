@@ -15,7 +15,7 @@ import ForgetPasswordPage from './login/views/ForgetPasswordPage';
 import UserDonationsPage from './user_donations/views/UserDonationsPage';
 import ApproveAdminsPage from './admin/views/ApproveAdminsPage.jsx'; // ✅ added
 import ToastProvider from './common/ToastProvider';
-
+import CartPage from './user_donations/views/CartPage';
 
 function App() {
   return (
@@ -43,6 +43,7 @@ function App() {
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route path="*" element={<LoginPage />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </Router>
   );
