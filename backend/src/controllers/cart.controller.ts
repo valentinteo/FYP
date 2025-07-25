@@ -97,3 +97,46 @@ export const getCart = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to fetch cart' });
     }
 };
+
+
+export const updateCartItem = async (req: Request, res: Response) => {
+    try {
+        const { cartId } = req.params;
+        const { cartDonationQuantity } = req.body;
+
+        if (!cartDonationQuantity) {
+            return res.status(400).json({ error: 'Donation amount is required' });
+        }
+
+        const cartItem = await Cart.findByPk(cartId);
+        if (!cartItem) {
+            return res.status(404).json({ error: 'Cart item not found' });
+        }
+
+        cartItem.cartDonationQuantity = cartDonationQuantity;
+        await cartItem.save();
+
+        return res.status(200).json({ message: 'Cart item updated', item: cartItem });
+    } catch (err: any) {
+        console.error('Update error:', err);
+        return res.status(500).json({ error: 'Failed to update cart item' });
+    }
+};
+
+
+export const deleteCartItem = async (req: Request, res: Response) => {
+    try {
+        const { cartId } = req.params;
+
+        const deleted = await Cart.destroy({ where: { cartId } });
+
+        if (deleted === 0) {
+            return res.status(404).json({ error: 'Cart item not found' });
+        }
+
+        return res.status(200).json({ message: 'Cart item deleted' });
+    } catch (err: any) {
+        console.error('Delete error:', err);
+        return res.status(500).json({ error: 'Failed to delete cart item' });
+    }
+};
