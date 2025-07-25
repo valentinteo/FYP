@@ -7,7 +7,7 @@ const CartPage = () => {
     useEffect(() => {
         fetch('http://localhost:5000/api/cart', {
             method: 'GET',
-            credentials: 'include', // ✅ send session cookie
+            credentials: 'include',
         })
             .then((res) => res.json())
             .then((data) => {
@@ -33,7 +33,7 @@ const CartPage = () => {
                         <thead>
                             <tr>
                                 <th style={thStyle}>#</th>
-                                <th style={thStyle}>Charity ID</th>
+                                <th style={thStyle}>Charity Name</th>
                                 <th style={thStyle}>Amount ($)</th>
                             </tr>
                         </thead>
@@ -41,8 +41,8 @@ const CartPage = () => {
                             {cartItems.map((item, index) => (
                                 <tr key={index}>
                                     <td style={tdStyle}>{index + 1}</td>
-                                    <td style={tdStyle}>{item.charity_id}</td>
-                                    <td style={tdStyle}>{item.donation_amount}</td>
+                                    <td style={tdStyle}>{item.charity?.charity_name || 'N/A'}</td>
+                                    <td style={tdStyle}>{item.cartDonationQuantity}</td>
                                 </tr>
                             ))}
                         </tbody>
