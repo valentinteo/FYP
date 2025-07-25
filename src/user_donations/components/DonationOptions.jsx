@@ -10,7 +10,6 @@ const DonationOptions = ({ charity }) => {
     const [modalAmount, setModalAmount] = useState(0);
 
     const navigate = useNavigate();
-
     const presetAmounts = [10, 60, 120, 220];
 
     const handleDonateNow = (amount) => {
@@ -22,22 +21,22 @@ const DonationOptions = ({ charity }) => {
         if (!charity?.charity_id) return;
 
         try {
-            // ✅ Step 1: Check login session
             const userRes = await fetch('http://localhost:5000/api/auth/me', {
                 method: 'POST',
-                credentials: 'include', // ✅ include session cookie
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (!userRes.ok) throw new Error('User not authenticated');
 
-            await userRes.json(); // ✅ still consume the response even if unused
+            const user = await userRes.json(); // ✅ assign response to user
+            const userId = user.id;            // ✅ access user.id now safely
 
-            // ✅ Step 2: Add to cart
             const payload = {
                 cartDonationQuantity: amount,
                 cartCharityId: charity.charity_id
             };
+
 
             const cartRes = await fetch('http://localhost:5000/api/cart', {
                 method: 'POST',

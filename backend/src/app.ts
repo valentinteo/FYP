@@ -130,6 +130,12 @@ app.use(session({
   }
 }));
 
+
+app.use((req, res, next) => {
+  console.log('📦 Session content:', req.session);
+  next();
+});
+
 // ✅ API routes
 app.use('/api/charities', charityRoutes);
 app.use('/api/donations', donationRoutes);

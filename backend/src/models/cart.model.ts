@@ -1,14 +1,6 @@
-import {
-  Table,
-  Column,
-  Model,
-  PrimaryKey,
-  AutoIncrement,
-  DataType,
-  ForeignKey
-} from 'sequelize-typescript';
-import User from './user.model';
+import { Table, Column, Model, PrimaryKey, AutoIncrement, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import Charity from './charity.model';
+import User from './user.model';
 
 @Table({ tableName: 'webCart', timestamps: false })
 export default class Cart extends Model {
@@ -21,10 +13,17 @@ export default class Cart extends Model {
   cartDonationQuantity!: number;
 
   @ForeignKey(() => Charity)
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER })
   cartCharityId!: number;
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER })
   cartUserId!: number;
+
+  @BelongsTo(() => Charity)
+  charity!: Charity;
+
+  @BelongsTo(() => User)
+  user!: User;
 }
+
