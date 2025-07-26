@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../../user_donations/components/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState([]);
+    const navigate = useNavigate();
 
     const fetchCart = () => {
         fetch('http://localhost:5000/api/cart', {
@@ -60,52 +62,76 @@ const CartPage = () => {
         }
     };
 
+    const getCartTotal = () => {
+        return cartItems.reduce((sum, item) => {
+            const quantity = parseFloat(item.cartDonationQuantity || 0);
+            return sum + quantity;
+        }, 0).toFixed(2);
+    };
+
+    const handlePay = () => {
+        const total = getCartTotal();
+        navigate('/payment/nets-qr', { state: { cartTotal: total } });
+    };
+
     return (
         <>
             <Navbar />
+            <ToastContainer />
             <div style={pageWrapper}>
                 <h2 style={heading}>Your Donation Cart</h2>
 
                 {cartItems.length === 0 ? (
                     <p style={emptyText}>No donations in cart.</p>
                 ) : (
-                    <div style={cardContainer}>
-                        {cartItems.map((item, index) => (
-                            <div key={index} style={cardStyle}>
-                                <img
-                                    src={`http://localhost:5000/uploads/${item.charity?.charity_image}`}
-                                    alt={item.charity?.charity_name}
-                                    style={imageStyle}
-                                />
-                                <div style={infoStyle}>
-                                    <h3 style={charityName}>{item.charity?.charity_name}</h3>
+                    <>
+                        <div style={cardContainer}>
+                            {cartItems.map((item, index) => (
+                                <div key={index} style={cardStyle}>
+                                    <img
+                                        src={`http://localhost:5000/uploads/${item.charity?.charity_image}`}
+                                        alt={item.charity?.charity_name}
+                                        style={imageStyle}
+                                    />
+                                    <div style={infoStyle}>
+                                        <h3 style={charityName}>{item.charity?.charity_name}</h3>
 
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={item.cartDonationQuantity}
-                                            onChange={(e) => {
-                                                const updatedItems = cartItems.map((cart) =>
-                                                    cart.cartId === item.cartId
-                                                        ? { ...cart, cartDonationQuantity: e.target.value }
-                                                        : cart
-                                                );
-                                                setCartItems(updatedItems);
-                                            }}
-                                            style={inputStyle}
-                                        />
-                                        <button onClick={() => handleUpdate(item.cartId, item.cartDonationQuantity)} style={updateBtn}>
-                                            Update
-                                        </button>
-                                        <button onClick={() => handleDelete(item.cartId)} style={deleteBtn}>
-                                            Delete
-                                        </button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                value={item.cartDonationQuantity}
+                                                onChange={(e) => {
+                                                    const updatedItems = cartItems.map((cart) =>
+                                                        cart.cartId === item.cartId
+                                                            ? { ...cart, cartDonationQuantity: e.target.value }
+                                                            : cart
+                                                    );
+                                                    setCartItems(updatedItems);
+                                                }}
+                                                style={inputStyle}
+                                            />
+                                            <button onClick={() => handleUpdate(item.cartId, item.cartDonationQuantity)} style={updateBtn}>
+                                                Update
+                                            </button>
+                                            <button onClick={() => handleDelete(item.cartId)} style={deleteBtn}>
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+
+                        {/* React-Router based Payment Button */}
+                        <div style={{ marginTop: '40px', textAlign: 'center' }}>
+                            <h3>Pay with NETS</h3>
+                            <p>Total Amount: ${getCartTotal()}</p>
+                            <button onClick={handlePay} style={netsBtn}>
+                                Make Payment
+                            </button>
+                        </div>
+                    </>
                 )}
             </div>
         </>
@@ -136,7 +162,6 @@ const imageStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-
 };
 const infoStyle = { display: 'flex', flexDirection: 'column', flexGrow: 1 };
 const charityName = { fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' };
@@ -162,6 +187,16 @@ const deleteBtn = {
     border: 'none',
     borderRadius: '6px',
     cursor: 'pointer'
+};
+const netsBtn = {
+    marginTop: '10px',
+    padding: '10px 20px',
+    backgroundColor: '#0070BA',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '16px',
+    cursor: 'pointer',
 };
 
 export default CartPage;

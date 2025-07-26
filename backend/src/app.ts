@@ -104,6 +104,7 @@ import taxDeductionRoutes from './routes/taxDeduction.routes';
 import userDonationsRoutes from './routes/userDonations.routes';
 import charitiesRoutes from './routes/charities.routes';
 import cartRoutes from './routes/cart.routes';
+import paymentRoutes from './routes/payment.routes';
 
 dotenv.config();
 
@@ -132,7 +133,6 @@ app.use(session({
 
 
 app.use((req, res, next) => {
-  console.log('📦 Session content:', req.session);
   next();
 });
 
@@ -147,6 +147,7 @@ app.use('/api', taxDeductionRoutes);
 app.use('/api/user-donations', userDonationsRoutes);
 app.use('/api/charities', charitiesRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/', paymentRoutes); 
 
 connect_db();
 

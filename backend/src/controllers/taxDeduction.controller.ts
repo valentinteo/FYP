@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { Sequelize } from 'sequelize';
 import Donation from '../models/donation.model';
 import User from '../models/user.model';
 import Charity from '../models/charity.model';
