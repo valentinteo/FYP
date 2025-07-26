@@ -9,9 +9,9 @@ const TransactionFailPage = ({ message = "Transaction Failed" }) => {
       <div className="netsQrPaymentGatewayWebpage">
         <div className="netsQrTxnFailStatus">
           <img
-            src="/images/redCross.png"
+            src={`http://localhost:5000/uploads/redCross.png`}
             alt="Transaction Fail"
-            style={{ width: '30%', height: 'auto' }}
+            style={{ width: '20%', height: 'auto' }}
           />
           <h2 className="text">TRANSACTION FAILED</h2>
           <div className="button" id="btnFail"></div>

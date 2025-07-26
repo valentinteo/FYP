@@ -102,7 +102,7 @@ const NetsQrPage = () => {
       <p>Use your bank app simulator to scan and complete payment</p>
       <img src={qrData.qrCodeUrl} alt="QR Code" />
       <p id="timer">⏳ Time remaining: 3:00</p>
-      <img src="/images/netsQrInfo.png" alt="NETS QR Info" width="40%" />
+      <img src={`http://localhost:5000/uploads/netsQrInfo.png`} alt="NETS QR Info" width="40%"/>
       <br />
       <a href="/cart">Cancel</a>
     </div>
