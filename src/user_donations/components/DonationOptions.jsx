@@ -29,8 +29,8 @@ const DonationOptions = ({ charity }) => {
 
             if (!userRes.ok) throw new Error('User not authenticated');
 
-            const user = await userRes.json(); // ✅ assign response to user
-            const userId = user.id;            // ✅ access user.id now safely
+            const user = await userRes.json(); 
+            const userId = user.id;            
 
             const payload = {
                 cartDonationQuantity: amount,

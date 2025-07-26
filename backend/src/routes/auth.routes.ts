@@ -15,7 +15,7 @@ const router = Router();
 router.post('/login', loginUser);
 router.post('/signup', signupAdmin); // ✅ Now handled by Admin model
 router.put('/reset-password', resetAdminPassword); // ✅ Add this line
-// router.post('/me', getCurrentAdmin);
+router.post('/me', getCurrentAdmin);
 router.get('/getCurrentAdmin', getCurrentAdmin);
 
 
