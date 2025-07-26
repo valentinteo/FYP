@@ -106,6 +106,7 @@ import charitiesRoutes from './routes/charities.routes';
 import cartRoutes from './routes/cart.routes';
 import paymentRoutes from './routes/payment.routes';
 
+
 dotenv.config();
 
 const app = express();
@@ -133,6 +134,7 @@ app.use(session({
 
 
 app.use((req, res, next) => {
+  console.log('📦 Session content:', req.session);
   next();
 });
 

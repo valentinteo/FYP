@@ -83,7 +83,7 @@
 // export default DashboardPage;
 
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../common/Sidebar';
 import PieChartPlaceholder from '../components/PieChartPlaceholder';
 import BarChartPlaceholder from '../components/BarChartPlaceholder';
@@ -94,23 +94,52 @@ import FundraisingProgressCard from '../components/FundraisingProgressCard';
 const DashboardPage = () => {
   const [adminData, setAdminData] = useState(null);
   const [totalDonations, setTotalDonations] = useState(0);
-  const location = useLocation();
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const { admin_email, admin_password } = location.state || {};
+
+  //   if (!admin_email || !admin_password) {
+  //     navigate('/login');
+  //     return;
+  //   }
+
+  //   fetch('http://localhost:5000/api/auth/me', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ admin_email, admin_password })
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setAdminData(data);
+  //     })
+  //     .catch(err => {
+  //       console.error('Auth failed:', err);
+  //       navigate('/login');
+  //     });
+  // }, [location.state, navigate]);
+
+  // // Fetch total donations once
+  // useEffect(() => {
+  //   fetch('http://localhost:5000/api/donations/total')
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       setTotalDonations(data.total || 0); // adjust if response key is different
+  //     })
+  //     .catch(err => {
+  //       console.error('Failed to fetch total donations:', err);
+  //     });
+  // }, []);
+
   useEffect(() => {
-    const { admin_email, admin_password } = location.state || {};
-
-    if (!admin_email || !admin_password) {
-      navigate('/login');
-      return;
-    }
-
-    fetch('http://localhost:5000/api/auth/me', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_email, admin_password })
+    fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
+      method: 'GET',
+      credentials: 'include', // ✅ Session-based auth
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Not logged in');
+        return res.json();
+      })
       .then(data => {
         setAdminData(data);
       })
@@ -118,14 +147,13 @@ const DashboardPage = () => {
         console.error('Auth failed:', err);
         navigate('/login');
       });
-  }, [location.state, navigate]);
+  }, [navigate]);
 
-  // Fetch total donations once
   useEffect(() => {
     fetch('http://localhost:5000/api/donations/total')
       .then(res => res.json())
       .then(data => {
-        setTotalDonations(data.total || 0); // adjust if response key is different
+        setTotalDonations(data.total || 0);
       })
       .catch(err => {
         console.error('Failed to fetch total donations:', err);

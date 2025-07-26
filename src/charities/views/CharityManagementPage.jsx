@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../common/Sidebar';
 import CharityTable from '../components/CharityTable';
 import AddCharityModal from '../components/AddCharityModal';
@@ -13,39 +13,66 @@ const CharityManagementPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCharity, setEditingCharity] = useState(null);
   const [adminData, setAdminData] = useState(null);
-  const location = useLocation();
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const { admin_email, admin_password } = location.state || {};
+
+  //   if (!admin_email || !admin_password) {
+  //     navigate('/login');
+  //     return;
+  //   }
+
+  //   fetch('http://localhost:5000/api/auth/me', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ admin_email, admin_password })
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       const role = (data.admin_role || '').toLowerCase();
+  //       if (role !== 'superadmin' && role !== 'charity admin') {
+  //         navigate('/unauthorized', {
+  //           state: { admin_email, admin_password, admin_role: data.admin_role }
+  //         });
+  //       } else {
+  //         setAdminData(data);
+  //         fetchCharities();
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error('Auth error:', err);
+  //       navigate('/login');
+  //     });
+  // }, [location.state, navigate]);
+
+
   useEffect(() => {
-    const { admin_email, admin_password } = location.state || {};
-
-    if (!admin_email || !admin_password) {
-      navigate('/login');
-      return;
-    }
-
-    fetch('http://localhost:5000/api/auth/me', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_email, admin_password })
+    fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
+      method: 'GET',
+      credentials: 'include', // ✅ Important: sends the session cookie
     })
-      .then(res => res.json())
-      .then(data => {
-        const role = (data.admin_role || '').toLowerCase();
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Unauthorized');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const role = (data.admin_role || data.role || '').toLowerCase();
+
         if (role !== 'superadmin' && role !== 'charity admin') {
-          navigate('/unauthorized', {
-            state: { admin_email, admin_password, admin_role: data.admin_role }
-          });
+          navigate('/unauthorized');
         } else {
           setAdminData(data);
-          fetchCharities();
+          fetchCharities(); // ✅ Keep your original data fetch
         }
       })
-      .catch(err => {
-        console.error('Auth error:', err);
+      .catch((err) => {
+        console.error('Session auth error:', err);
         navigate('/login');
       });
-  }, [location.state, navigate]);
+  }, [navigate]);
 
   const fetchCharities = () => {
     fetch('http://localhost:5000/api/charities')

@@ -757,7 +757,7 @@
 // export default AdminUsersPage;
 
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UserTable from '../components/AdminTable';
 import Sidebar from '../../common/Sidebar';
 import AddAdminModal from '../components/AddAdminModal';
@@ -772,45 +772,70 @@ const AdminUsersPage = () => {
     admin_phone: '',
   });
   const [adminData, setAdminData] = useState(null);
-  const location = useLocation();
   const navigate = useNavigate();
 
   // ✅ Authenticate on mount
+  // useEffect(() => {
+  //   const { admin_email, admin_password } = location.state || {};
+
+  //   if (!admin_email || !admin_password) {
+  //     navigate('/login');
+  //     return;
+  //   }
+
+  //   fetch('http://localhost:5000/api/auth/me', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ admin_email, admin_password })
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
+
+  //       // ✅ Case-insensitive + null-safe check
+  //       if (!data.admin_role || data.admin_role.toLowerCase() !== 'superadmin') {
+  //         navigate('/unauthorized', {
+  //           state: {
+  //             admin_email,
+  //             admin_password,
+  //             admin_role: data.admin_role
+  //           }
+  //         });
+  //       } else {
+  //         setAdminData(data);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error('Auth error:', err);
+  //       navigate('/login');
+  //     });
+  // }, [location.state, navigate]);
+
   useEffect(() => {
-    const { admin_email, admin_password } = location.state || {};
-
-    if (!admin_email || !admin_password) {
-      navigate('/login');
-      return;
-    }
-
-    fetch('http://localhost:5000/api/auth/me', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_email, admin_password })
+    fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
+      method: 'GET',
+      credentials: 'include', // ✅ Send session cookie
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => {
+        if (!res.ok) throw new Error('Unauthorized');
+        return res.json();
+      })
+      .then((data) => {
         console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
+        const role = (data.admin_role || data.role || '').toLowerCase();
 
-        // ✅ Case-insensitive + null-safe check
-        if (!data.admin_role || data.admin_role.toLowerCase() !== 'superadmin') {
-          navigate('/unauthorized', {
-            state: {
-              admin_email,
-              admin_password,
-              admin_role: data.admin_role
-            }
-          });
+        if (role !== 'superadmin') {
+          navigate('/unauthorized');
         } else {
           setAdminData(data);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Auth error:', err);
         navigate('/login');
       });
-  }, [location.state, navigate]);
+  }, [navigate]);
+
 
   const handleOpenModal = () => setShowModal(true);
   const handleCloseModal = () => {
