@@ -6,16 +6,16 @@ const DonationOptions = ({ charity }) => {
     const [selected, setSelected] = useState(null);
     const [hovered, setHovered] = useState(null);
     const [customAmount, setCustomAmount] = useState('');
-    const [showModal, setShowModal] = useState(false);
-    const [modalAmount, setModalAmount] = useState(0);
+    // const [showModal, setShowModal] = useState(false);
+    // const [ setModalAmount] = useState(0);
 
     const navigate = useNavigate();
     const presetAmounts = [10, 60, 120, 220];
 
-    const handleDonateNow = (amount) => {
-        setModalAmount(amount);
-        setShowModal(true);
-    };
+    // const handleDonateNow = (amount) => {
+    //     setModalAmount(amount);
+    //     setShowModal(true);
+    // };
 
     const handleAddToCart = async (amount) => {
         if (!charity?.charity_id) return;
@@ -80,7 +80,7 @@ const DonationOptions = ({ charity }) => {
                         <strong style={styles.amount}>{amount}</strong>
                         {hovered === amount && (
                             <div style={styles.actions}>
-                                <button style={styles.donateBtn} onClick={() => handleDonateNow(amount)}>Donate now</button>
+                                {/* <button style={styles.donateBtn} onClick={() => handleDonateNow(amount)}>Donate now</button> */}
                                 <button style={styles.secondaryBtn} onClick={() => handleAddToCart(amount)}>
                                     Add to cart
                                 </button>
@@ -91,7 +91,7 @@ const DonationOptions = ({ charity }) => {
                 </div>
             ))}
 
-            <div style={styles.card}>
+            {/* <div style={styles.card}>
                 <div style={styles.cardTop}>
                     <span style={styles.dollar}>$</span>
                     <input
@@ -102,9 +102,9 @@ const DonationOptions = ({ charity }) => {
                         style={styles.input}
                     />
                 </div>
-            </div>
+            </div> */}
 
-            {/* Modal */}
+            {/* Modal
             {showModal && (
                 <div style={styles.modalOverlay}>
                     <div style={styles.modal}>
@@ -140,7 +140,7 @@ const DonationOptions = ({ charity }) => {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
