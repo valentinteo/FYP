@@ -13,7 +13,7 @@ import RequireSuperadmin from './admin/components/RequireSuperadmin';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import ForgetPasswordPage from './login/views/ForgetPasswordPage';
 import UserDonationsPage from './user_donations/views/UserDonationsPage';
-import ApproveAdminsPage from './admin/views/ApproveAdminsPage.jsx'; // ✅ added
+import ApproveAdminsPage from './admin/views/ApproveAdminsPage.jsx'; 
 import ToastProvider from './common/ToastProvider';
 import CartPage from './user_donations/views/CartPage';
 import NetsQrPage from './user_donations/views/payment/netsQr';

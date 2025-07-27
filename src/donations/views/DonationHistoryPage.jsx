@@ -13,48 +13,6 @@ const DonationHistoryPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const { admin_email, admin_password } = location.state || {};
-
-  //   if (!admin_email || !admin_password) {
-  //     navigate('/login');
-  //     return;
-  //   }
-
-  //   fetch('http://localhost:5000/api/auth/me', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ admin_email, admin_password })
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       const role = data.admin_role?.toLowerCase();
-  //       if (!['superadmin', 'charity admin'].includes(role)) {
-  //         navigate('/unauthorized', {
-  //           state: {
-  //             admin_email,
-  //             admin_password,
-  //             admin_role: data.admin_role
-  //           }
-  //         });
-  //       } else {
-  //         setAdminData(data);
-  //         fetch('http://localhost:5000/api/donations')
-  //           .then(res => res.json())
-  //           .then(setDonations)
-  //           .catch(err => {
-  //             console.error('Fetch donations failed:', err);
-  //             setError('Failed to load donations. Please try again later.');
-  //           });
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Auth check failed:', err);
-  //       navigate('/login');
-  //     });
-  // }, [location.state, navigate]);
-
-
   useEffect(() => {
     fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
       method: 'GET',

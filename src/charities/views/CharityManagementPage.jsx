@@ -15,38 +15,6 @@ const CharityManagementPage = () => {
   const [adminData, setAdminData] = useState(null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const { admin_email, admin_password } = location.state || {};
-
-  //   if (!admin_email || !admin_password) {
-  //     navigate('/login');
-  //     return;
-  //   }
-
-  //   fetch('http://localhost:5000/api/auth/me', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ admin_email, admin_password })
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       const role = (data.admin_role || '').toLowerCase();
-  //       if (role !== 'superadmin' && role !== 'charity admin') {
-  //         navigate('/unauthorized', {
-  //           state: { admin_email, admin_password, admin_role: data.admin_role }
-  //         });
-  //       } else {
-  //         setAdminData(data);
-  //         fetchCharities();
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Auth error:', err);
-  //       navigate('/login');
-  //     });
-  // }, [location.state, navigate]);
-
-
   useEffect(() => {
     fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
       method: 'GET',
