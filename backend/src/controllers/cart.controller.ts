@@ -106,3 +106,21 @@ export const deleteCartItem = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Failed to delete cart item' });
     }
 };
+
+// cart.controller.ts
+export const clearCart = async (req: Request, res: Response) => {
+  try {
+    const user = req.session.user;
+    if (!user || !user.id) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    await Cart.destroy({ where: { cartUserId: user.id } });
+
+    return res.status(200).json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
