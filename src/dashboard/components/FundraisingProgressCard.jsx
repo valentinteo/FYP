@@ -6,7 +6,8 @@ const FundraisingProgressCard = () => {
   const [progress, setProgress] = useState('--');
   const [totalDonations, setTotalDonations] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mode, setMode] = useState('view'); // view | add | edit
+  const [mode, setMode] = useState('view');
+  const [fundraisingList, setFundraisingList] = useState([]);
   const [charities, setCharities] = useState([]);
   const [fundraising, setFundraising] = useState({
     fundraising_id: '',
@@ -22,48 +23,84 @@ const FundraisingProgressCard = () => {
     return new Date(dt).toISOString().split('T')[0];
   };
 
+
   useEffect(() => {
     fetch('http://localhost:5000/api/fundraising/progress')
       .then(res => res.json())
       .then(data => setProgress(data.progress || '--%'))
       .catch(() => setProgress('--%'));
-
-    fetch('http://localhost:5000/api/fundraising/latest')
+    // Fetch ongoing campaigns
+    fetch('http://localhost:5000/api/fundraising/ongoing')
       .then(res => res.json())
       .then(data => {
-        const endDate = new Date(data.fundraising_end_datetime).setHours(0, 0, 0, 0);
+        if (!Array.isArray(data) || data.length === 0) {
+          setFundraisingList([]);
+          setFundraising({
+            fundraising_id: '',
+            fundraising_title: '',
+            fundraising_description: '',
+            fundraising_goal_amount: '',
+            fundraising_start_datetime: '',
+            fundraising_end_datetime: '',
+            fundraising_charity_id: '',
+          });
+          return;
+        }
+
         const today = new Date().setHours(0, 0, 0, 0);
 
-        if (endDate < today) {
-          // auto-delete if expired
-          fetch(`http://localhost:5000/api/fundraising/${data.fundraising_id}`, {
+        // Filter out expired campaigns
+        const validCampaigns = data.filter(c => {
+          const endDate = new Date(c.fundraising_end_datetime).setHours(0, 0, 0, 0);
+          return endDate >= today;
+        });
+
+        // Delete expired ones
+        const expiredCampaigns = data.filter(c => {
+          const endDate = new Date(c.fundraising_end_datetime).setHours(0, 0, 0, 0);
+          return endDate < today;
+        });
+
+        expiredCampaigns.forEach(campaign => {
+          fetch(`http://localhost:5000/api/fundraising/${campaign.fundraising_id}`, {
             method: 'DELETE',
           })
             .then(() => {
-              toast.info('🗑️ Expired fundraising campaign was automatically deleted.');
-              setFundraising({
-                fundraising_id: '',
-                fundraising_title: '',
-                fundraising_description: '',
-                fundraising_goal_amount: '',
-                fundraising_start_datetime: '',
-                fundraising_end_datetime: '',
-              });
+              toast.info(`🗑️ Expired campaign "${campaign.fundraising_title}" deleted.`);
             })
-            .catch(() => toast.error('❌ Failed to delete expired fundraising campaign.'));
-        } else {
+            .catch(() => {
+              toast.error(`❌ Failed to delete expired campaign "${campaign.fundraising_title}".`);
+            });
+        });
+
+        if (validCampaigns.length > 0) {
+          const first = validCampaigns[0];
+          setFundraisingList(validCampaigns);
           setFundraising({
-            ...data,
-            fundraising_start_datetime: formatDate(data.fundraising_start_datetime),
-            fundraising_end_datetime: formatDate(data.fundraising_end_datetime),
+            ...first,
+            fundraising_start_datetime: formatDate(first.fundraising_start_datetime),
+            fundraising_end_datetime: formatDate(first.fundraising_end_datetime),
+          });
+        } else {
+          setFundraisingList([]);
+          setFundraising({
+            fundraising_id: '',
+            fundraising_title: '',
+            fundraising_description: '',
+            fundraising_goal_amount: '',
+            fundraising_start_datetime: '',
+            fundraising_end_datetime: '',
+            fundraising_charity_id: '',
           });
         }
       });
 
+    // Fetch total donations
     fetch('http://localhost:5000/api/donations/total')
       .then(res => res.json())
       .then(data => setTotalDonations(data.total_donations || 0));
   }, []);
+
 
   useEffect(() => {
     fetch('http://localhost:5000/api/charities')
@@ -86,10 +123,11 @@ const FundraisingProgressCard = () => {
       return;
     }
 
-    if (startDate < today) {
+    if (mode === 'add' && startDate < today) {
       toast.error("❌ Start date cannot be in the past.");
       return;
     }
+
 
     if (endDate < today) {
       toast.error("❌ End date cannot be in the past.");
@@ -142,19 +180,22 @@ const FundraisingProgressCard = () => {
     <>
       <div
         onClick={() => {
-          fetch('http://localhost:5000/api/fundraising/latest')
+          fetch('http://localhost:5000/api/fundraising/ongoing')
             .then(res => res.json())
             .then(data => {
-              setFundraising({
-                ...data,
-                fundraising_start_datetime: formatDate(data.fundraising_start_datetime),
-                fundraising_end_datetime: formatDate(data.fundraising_end_datetime),
-              });
-              setIsModalOpen(true); // ✅ open only after setting data
+              if (Array.isArray(data) && data.length > 0) {
+                const first = data[0];
+                setFundraising({
+                  ...first,
+                  fundraising_start_datetime: formatDate(first.fundraising_start_datetime),
+                  fundraising_end_datetime: formatDate(first.fundraising_end_datetime),
+                });
+              }
+              setIsModalOpen(true);
             })
             .catch(err => {
               console.error('Error fetching fundraising:', err);
-              setIsModalOpen(true); // fallback: open anyway if needed
+              setIsModalOpen(true);
             });
         }}
         style={{ cursor: 'pointer' }}
@@ -164,18 +205,42 @@ const FundraisingProgressCard = () => {
           {progress}
         </StatCard>
       </div>
-
       {isModalOpen && (
         <div style={modalStyles.overlay}>
           <div style={modalStyles.modal}>
             {mode === 'view' && (
               <>
+                {fundraisingList.length > 1 && (
+                  <select
+                    value={fundraising.fundraising_id}
+                    onChange={(e) => {
+                      const selected = fundraisingList.find(
+                        (f) => f.fundraising_id === parseInt(e.target.value)
+                      );
+                      if (selected) {
+                        setFundraising({
+                          ...selected,
+                          fundraising_start_datetime: formatDate(selected.fundraising_start_datetime),
+                          fundraising_end_datetime: formatDate(selected.fundraising_end_datetime),
+                        });
+                      }
+                    }}
+                  >
+                    {fundraisingList.map((f) => (
+                      <option key={f.fundraising_id} value={f.fundraising_id}>
+                        {f.fundraising_title}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
                 <h2
                   style={{ cursor: 'pointer', color: '#1d4ed8' }}
                   onClick={() => setMode('edit')}
                 >
                   {fundraising.fundraising_title || 'Untitled Campaign'}
                 </h2>
+
                 <button onClick={handleAddMode} style={modalStyles.button}>
                   Add Fundraising
                 </button>
@@ -208,29 +273,61 @@ const FundraisingProgressCard = () => {
                 )}
 
                 <label>Title</label>
-                <input name="fundraising_title" value={fundraising.fundraising_title} onChange={handleChange} />
+                <input
+                  name="fundraising_title"
+                  value={fundraising.fundraising_title}
+                  onChange={handleChange}
+                />
 
                 <label>Description</label>
-                <textarea name="fundraising_description" value={fundraising.fundraising_description} onChange={handleChange} />
+                <textarea
+                  name="fundraising_description"
+                  value={fundraising.fundraising_description}
+                  onChange={handleChange}
+                />
 
                 <label>Goal Amount</label>
-                <input name="fundraising_goal_amount" type="number" value={fundraising.fundraising_goal_amount} onChange={handleChange} />
+                <input
+                  name="fundraising_goal_amount"
+                  type="number"
+                  value={fundraising.fundraising_goal_amount}
+                  onChange={handleChange}
+                />
 
                 <label>Start Date</label>
-                <input name="fundraising_start_datetime" type="date" value={fundraising.fundraising_start_datetime} onChange={handleChange} />
+                <input
+                  name="fundraising_start_datetime"
+                  type="date"
+                  value={fundraising.fundraising_start_datetime}
+                  onChange={handleChange}
+                />
 
                 <label>End Date</label>
-                <input name="fundraising_end_datetime" type="date" value={fundraising.fundraising_end_datetime} onChange={handleChange} />
+                <input
+                  name="fundraising_end_datetime"
+                  type="date"
+                  value={fundraising.fundraising_end_datetime}
+                  onChange={handleChange}
+                />
 
                 <div style={{ marginTop: '1rem' }}>
                   <button onClick={handleSave} style={modalStyles.button}>Save</button>
-                  <button onClick={() => { setIsModalOpen(false); setMode('view'); }} style={modalStyles.closeButton}>Cancel</button>
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setMode('view');
+                    }}
+                    style={modalStyles.closeButton}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </>
             )}
           </div>
         </div>
       )}
+
     </>
   );
 };
@@ -240,38 +337,47 @@ export default FundraisingProgressCard;
 const modalStyles = {
   overlay: {
     position: 'fixed',
-    top: 0, left: 0,
-    width: '100vw', height: '100vh',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     padding: '2rem',
-    borderRadius: '10px',
-    maxWidth: '500px',
-    width: '100%',
+    borderRadius: '12px',
+    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+    maxWidth: '520px',
+    width: '90%',
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.5rem',
+    gap: '1rem',
+    fontFamily: 'Segoe UI, sans-serif',
   },
   button: {
     backgroundColor: '#facc15',
-    padding: '0.5rem 1rem',
+    color: '#000',
+    padding: '0.75rem 1.25rem',
     border: 'none',
+    fontWeight: 'bold',
     cursor: 'pointer',
-    borderRadius: '5px',
-    marginRight: '0.5rem'
+    borderRadius: '6px',
+    transition: 'background-color 0.3s ease',
   },
   closeButton: {
-    backgroundColor: '#ccc',
-    padding: '0.5rem 1rem',
+    backgroundColor: '#d1d5db',
+    color: '#111827',
+    padding: '0.75rem 1.25rem',
     border: 'none',
+    fontWeight: 'bold',
     cursor: 'pointer',
-    borderRadius: '5px'
-  }
+    borderRadius: '6px',
+    transition: 'background-color 0.3s ease',
+  },
 };
 

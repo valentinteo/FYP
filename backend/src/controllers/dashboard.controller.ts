@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Op } from 'sequelize';
 import Donation from '../models/donation.model';
 import Charity from '../models/charity.model';
 import Fundraising from '../models/fundraising.model';
@@ -66,7 +67,7 @@ export const getFundraisingProgress = async (req: Request, res: Response) => {
   try {
     // Get the latest fundraising campaign
     const latestFundraising = await Fundraising.findOne({
-      order: [['fundraising_id', 'DESC']],
+      order: [['fundraising_id', 'ASC']],
     });
 
     if (!latestFundraising) {
@@ -88,21 +89,54 @@ export const getFundraisingProgress = async (req: Request, res: Response) => {
   }
 };
 
-export const getLatestFundraising = async (req: Request, res: Response) => {
+
+
+// export const getLatestFundraising = async (req: Request, res: Response) => {
+//   try {
+//     const currentDate = new Date();
+
+//     const ongoing = await Fundraising.findOne({
+//       where: {
+//         fundraising_start_datetime: { [Op.lte]: currentDate },
+//         fundraising_end_datetime: { [Op.gte]: currentDate },
+//       },
+//       order: [['fundraising_id', 'ASC']], // get the earliest one if multiple
+//     });
+
+//     if (!ongoing) {
+//       return res.status(404).json({ error: 'No ongoing fundraising campaign found' });
+//     }
+
+//     res.json(ongoing);
+//   } catch (error) {
+//     console.error('Error fetching ongoing fundraising:', error);
+//     res.status(500).json({ error: 'Failed to fetch fundraising data' });
+//   }
+// };
+
+
+export const getOngoingFundraising = async (req: Request, res: Response) => {
   try {
-    const latest = await Fundraising.findOne({
-      order: [['fundraising_id', 'DESC']], // ✅ not createdAt
+    const currentDate = new Date();
+
+    const ongoingCampaigns = await Fundraising.findAll({
+      where: {
+        fundraising_start_datetime: { [Op.lte]: currentDate },
+        fundraising_end_datetime: { [Op.gte]: currentDate },
+      },
+      order: [['fundraising_id', 'ASC']], // optional: sorted by earliest created
     });
-    if (!latest) {
-      return res.status(404).json({ error: 'No fundraising campaign found' });
+
+    if (ongoingCampaigns.length === 0) {
+      return res.status(404).json({ error: 'No ongoing fundraising campaigns found' });
     }
-    res.json(latest);
+
+    res.json(ongoingCampaigns);
   } catch (error) {
-    console.error('Error fetching latest fundraising:', error);
+    console.error('Error fetching ongoing fundraising campaigns:', error);
     res.status(500).json({ error: 'Failed to fetch fundraising data' });
   }
 };
-
 
 
 
