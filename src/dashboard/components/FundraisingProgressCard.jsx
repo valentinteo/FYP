@@ -112,7 +112,118 @@ const FundraisingProgressCard = () => {
     setFundraising({ ...fundraising, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
+  // const handleSave = () => {
+  //   const goalAmount = parseFloat(fundraising.fundraising_goal_amount);
+  //   const today = new Date().setHours(0, 0, 0, 0);
+  //   const startDate = new Date(fundraising.fundraising_start_datetime).setHours(0, 0, 0, 0);
+  //   const endDate = new Date(fundraising.fundraising_end_datetime).setHours(0, 0, 0, 0);
+
+  //   if (goalAmount < totalDonations) {
+  //     toast.error(`❌ Goal cannot be lower than total donations ($${totalDonations.toFixed(2)})`);
+  //     return;
+  //   }
+
+  //   if (mode === 'add' && startDate < today) {
+  //     toast.error("❌ Start date cannot be in the past.");
+  //     return;
+  //   }
+
+
+  //   if (endDate < today) {
+  //     toast.error("❌ End date cannot be in the past.");
+  //     return;
+  //   }
+
+  //   if (endDate < startDate) {
+  //     toast.error("❌ End date cannot be before start date.");
+  //     return;
+  //   }
+
+  //   const url =
+  //     mode === 'edit'
+  //       ? 'http://localhost:5000/api/fundraising/update'
+  //       : 'http://localhost:5000/api/fundraising/add';
+
+  //   const method = mode === 'edit' ? 'PUT' : 'POST';
+
+  //     fetch(url, {
+  //       method,
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(fundraising),
+  //     })
+  //       .then(res => {
+  //         if (!res.ok) return res.json().then(err => { throw new Error(err.error); });
+  //         return res.json();
+  //       })
+  //       .then(() => {
+  //         toast.success(`🎉 Fundraising ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
+  //         setIsModalOpen(false);
+  //         setMode('view');
+  //       })
+  //       .catch(() => toast.error(`❌ Failed to ${mode === 'edit' ? 'update' : 'create'} fundraising.`));
+  //   };
+
+  // const handleSave = () => {
+  //   const goalAmount = parseFloat(fundraising.fundraising_goal_amount);
+  //   const today = new Date().setHours(0, 0, 0, 0);
+  //   const startDate = new Date(fundraising.fundraising_start_datetime).setHours(0, 0, 0, 0);
+  //   const endDate = new Date(fundraising.fundraising_end_datetime).setHours(0, 0, 0, 0);
+
+  //   if (goalAmount < totalDonations) {
+  //     toast.error(`❌ Goal cannot be lower than total donations ($${totalDonations.toFixed(2)})`);
+  //     return;
+  //   }
+
+  //   if (mode === 'add' && startDate < today) {
+  //     toast.error("❌ Start date cannot be in the past.");
+  //     return;
+  //   }
+
+  //   if (endDate < today) {
+  //     toast.error("❌ End date cannot be in the past.");
+  //     return;
+  //   }
+
+  //   if (endDate < startDate) {
+  //     toast.error("❌ End date cannot be before start date.");
+  //     return;
+  //   }
+
+  //   const url =
+  //     mode === 'edit'
+  //       ? 'http://localhost:5000/api/fundraising/update'
+  //       : 'http://localhost:5000/api/fundraising/add';
+
+  //   const method = mode === 'edit' ? 'PUT' : 'POST';
+
+  //   console.log('🚀 Submitting fundraising payload:', fundraising); // ✅ log payload
+
+  //   fetch(url, {
+  //     method,
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(fundraising),
+  //   })
+  //     .then(res => {
+  //       if (!res.ok) {
+  //         return res.json().then(err => {
+  //           console.error('❌ Backend error response:', err); // ✅ log backend error
+  //           throw new Error(err.error || 'Unknown error');
+  //         });
+  //       }
+  //       return res.json();
+  //     })
+  //     .then(() => {
+  //       toast.success(`🎉 Fundraising ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
+  //       setIsModalOpen(false);
+  //       setMode('view');
+  //     })
+  //     .catch((err) => {
+  //       console.error('❌ Save failed:', err); // ✅ log JS error
+  //       toast.error(`❌ Failed to ${mode === 'edit' ? 'update' : 'create'} fundraising. ${err.message}`);
+  //     });
+  // };
+
+  const handleSave = async () => {
     const goalAmount = parseFloat(fundraising.fundraising_goal_amount);
     const today = new Date().setHours(0, 0, 0, 0);
     const startDate = new Date(fundraising.fundraising_start_datetime).setHours(0, 0, 0, 0);
@@ -127,7 +238,6 @@ const FundraisingProgressCard = () => {
       toast.error("❌ Start date cannot be in the past.");
       return;
     }
-
 
     if (endDate < today) {
       toast.error("❌ End date cannot be in the past.");
@@ -146,22 +256,37 @@ const FundraisingProgressCard = () => {
 
     const method = mode === 'edit' ? 'PUT' : 'POST';
 
-    fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(fundraising),
-    })
-      .then(res => {
-        if (!res.ok) return res.json().then(err => { throw new Error(err.error); });
-        return res.json();
-      })
-      .then(() => {
-        toast.success(`🎉 Fundraising ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
-        setIsModalOpen(false);
-        setMode('view');
-      })
-      .catch(() => toast.error(`❌ Failed to ${mode === 'edit' ? 'update' : 'create'} fundraising.`));
+    console.log('🚀 Submitting fundraising payload:', fundraising);
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fundraising),
+      });
+
+      if (!res.ok) {
+        let backendError = 'Unknown error';
+        try {
+          const err = await res.json();
+          backendError = err.error || backendError;
+        } catch (jsonErr) {
+          console.warn('⚠️ Could not parse backend error JSON:', jsonErr);
+        }
+        console.error('❌ Backend rejected request:', backendError);
+        toast.error(`❌ Failed to ${mode === 'edit' ? 'update' : 'create'} fundraising. ${backendError}`);
+        return;
+      }
+
+      toast.success(`🎉 Fundraising ${mode === 'edit' ? 'updated' : 'created'} successfully!`);
+      setIsModalOpen(false);
+      setMode('view');
+    } catch (err) {
+      console.error('❌ Network or JS error:', err);
+      toast.error(`❌ Something went wrong: ${err.message}`);
+    }
   };
+
 
 
   const handleAddMode = () => {
