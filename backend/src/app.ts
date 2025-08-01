@@ -59,6 +59,7 @@ app.use('/api/user-donations', userDonationsRoutes);
 app.use('/api/charities', charitiesRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/', paymentRoutes); 
+app.use('/api/donation', donationRoutes); 
 
 connect_db();
 

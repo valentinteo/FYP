@@ -34,3 +34,37 @@ export const getAllDonations = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch donations' });
   }
 };
+
+
+// donation.controller.ts
+export const addDonation = async (req: Request, res: Response) => {
+  const user = req.session.user;
+  if (!user || !user.id) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const {
+      donation_order_id,
+      donation_charity_id,
+      donation_amount,
+      donation_mode,
+      donation_is_tax_deductible,
+      donation_tax_deductible_amount,
+    } = req.body;
+
+    const newDonation = await Donation.create({
+      donation_user_id: user.id,
+      donation_order_id: donation_order_id ?? null,
+      donation_charity_id,
+      donation_amount,
+      donation_mode,
+      donation_created_datetime: new Date(),
+      donation_is_tax_deductible,
+      donation_tax_deductible_amount,
+    });
+
+    return res.status(201).json(newDonation);
+  } catch (error) {
+    console.error('❌ Failed to create donation:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};

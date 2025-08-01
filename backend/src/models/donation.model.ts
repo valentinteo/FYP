@@ -16,7 +16,8 @@ export default class Donation extends Model {
 
     @ForeignKey(() => Order)
     @Column({ type: DataType.INTEGER })
-    donation_order_id!: number;
+    // donation_order_id!: number;
+    donation_order_id!: number | null;
 
     @ForeignKey(() => Charity)
     @Column({ type: DataType.INTEGER })
