@@ -756,12 +756,144 @@
 
 // export default AdminUsersPage;
 
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import UserTable from '../components/AdminTable';
+// import Sidebar from '../../common/Sidebar';
+// import AddAdminModal from '../components/AddAdminModal';
+
+// const AdminUsersPage = () => {
+//   const [showModal, setShowModal] = useState(false);
+//   const [formData, setFormData] = useState({
+//     admin_name: '',
+//     admin_email: '',
+//     admin_password: '',
+//     admin_role: '',
+//     admin_phone: '',
+//   });
+//   const [adminData, setAdminData] = useState(null);
+//   const navigate = useNavigate();
+
+//   // ✅ Authenticate on mount
+//   // useEffect(() => {
+//   //   const { admin_email, admin_password } = location.state || {};
+
+//   //   if (!admin_email || !admin_password) {
+//   //     navigate('/login');
+//   //     return;
+//   //   }
+
+//   //   fetch('http://localhost:5000/api/auth/me', {
+//   //     method: 'POST',
+//   //     headers: { 'Content-Type': 'application/json' },
+//   //     body: JSON.stringify({ admin_email, admin_password })
+//   //   })
+//   //     .then(res => res.json())
+//   //     .then(data => {
+//   //       console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
+
+//   //       // ✅ Case-insensitive + null-safe check
+//   //       if (!data.admin_role || data.admin_role.toLowerCase() !== 'superadmin') {
+//   //         navigate('/unauthorized', {
+//   //           state: {
+//   //             admin_email,
+//   //             admin_password,
+//   //             admin_role: data.admin_role
+//   //           }
+//   //         });
+//   //       } else {
+//   //         setAdminData(data);
+//   //       }
+//   //     })
+//   //     .catch(err => {
+//   //       console.error('Auth error:', err);
+//   //       navigate('/login');
+//   //     });
+//   // }, [location.state, navigate]);
+
+//   useEffect(() => {
+//     fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
+//       method: 'GET',
+//       credentials: 'include', // ✅ Send session cookie
+//     })
+//       .then((res) => {
+//         if (!res.ok) throw new Error('Unauthorized');
+//         return res.json();
+//       })
+//       .then((data) => {
+//         console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
+//         const role = (data.admin_role || data.role || '').toLowerCase();
+
+//         if (role !== 'superadmin') {
+//           navigate('/unauthorized');
+//         } else {
+//           setAdminData(data);
+//         }
+//       })
+//       .catch((err) => {
+//         console.error('Auth error:', err);
+//         navigate('/login');
+//       });
+//   }, [navigate]);
+
+
+//   const handleOpenModal = () => setShowModal(true);
+//   const handleCloseModal = () => {
+//     setShowModal(false);
+//     setFormData({
+//       admin_name: '',
+//       admin_email: '',
+//       admin_password: '',
+//       admin_role: '',
+//       admin_phone: '',
+//     });
+//   };
+
+//   if (adminData === null) return <div>Loading...</div>;
+
+//   return (
+//     <div style={{ display: 'flex' }}>
+//       <Sidebar />
+//       <div style={{ marginLeft: '260px', padding: '2rem', width: '100%' }}>
+//         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//           <h2 style={{ margin: 0 }}>Admin Users & Roles</h2>
+//           <button
+//             onClick={handleOpenModal}
+//             style={{
+//               padding: '0.5rem 1rem',
+//               backgroundColor: '#0000FF',
+//               color: 'white',
+//               border: 'none',
+//               borderRadius: '4px',
+//               cursor: 'pointer'
+//             }}
+//           >
+//             + Add Admin
+//           </button>
+//         </div>
+
+//         <UserTable />
+
+//         {showModal && (
+//           <AddAdminModal
+//             formData={formData}
+//             setFormData={setFormData}
+//             onClose={handleCloseModal}
+//           />
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminUsersPage;
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserTable from '../components/AdminTable';
 import Sidebar from '../../common/Sidebar';
 import AddAdminModal from '../components/AddAdminModal';
-
+ 
 const AdminUsersPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -770,60 +902,24 @@ const AdminUsersPage = () => {
     admin_password: '',
     admin_role: '',
     admin_phone: '',
+    is_approved: false
   });
   const [adminData, setAdminData] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
-
-  // ✅ Authenticate on mount
-  // useEffect(() => {
-  //   const { admin_email, admin_password } = location.state || {};
-
-  //   if (!admin_email || !admin_password) {
-  //     navigate('/login');
-  //     return;
-  //   }
-
-  //   fetch('http://localhost:5000/api/auth/me', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ admin_email, admin_password })
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
-
-  //       // ✅ Case-insensitive + null-safe check
-  //       if (!data.admin_role || data.admin_role.toLowerCase() !== 'superadmin') {
-  //         navigate('/unauthorized', {
-  //           state: {
-  //             admin_email,
-  //             admin_password,
-  //             admin_role: data.admin_role
-  //           }
-  //         });
-  //       } else {
-  //         setAdminData(data);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error('Auth error:', err);
-  //       navigate('/login');
-  //     });
-  // }, [location.state, navigate]);
-
+ 
   useEffect(() => {
     fetch('http://localhost:5000/api/auth/getCurrentAdmin', {
       method: 'GET',
-      credentials: 'include', // ✅ Send session cookie
+      credentials: 'include',
     })
       .then((res) => {
         if (!res.ok) throw new Error('Unauthorized');
         return res.json();
       })
       .then((data) => {
-        console.log('Logged-in admin role:', data.admin_role); // ✅ Debug check
         const role = (data.admin_role || data.role || '').toLowerCase();
-
         if (role !== 'superadmin') {
           navigate('/unauthorized');
         } else {
@@ -835,22 +931,109 @@ const AdminUsersPage = () => {
         navigate('/login');
       });
   }, [navigate]);
-
-
-  const handleOpenModal = () => setShowModal(true);
-  const handleCloseModal = () => {
-    setShowModal(false);
+ 
+  const handleOpenModal = () => {
+    setIsEditMode(false);
+    setEditingId(null);
+    setShowModal(true);
     setFormData({
       admin_name: '',
       admin_email: '',
       admin_password: '',
       admin_role: '',
       admin_phone: '',
+      is_approved: false
     });
   };
-
+ 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setIsEditMode(false);
+    setEditingId(null);
+    setFormData({
+      admin_name: '',
+      admin_email: '',
+      admin_password: '',
+      admin_role: '',
+      admin_phone: '',
+      is_approved: false
+    });
+  };
+ 
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+ 
+  const handleAddAdmin = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+ 
+      if (response.ok) {
+        alert('Admin added successfully');
+        handleCloseModal();
+        window.location.reload();
+      } else {
+        alert('Failed to add admin');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Something went wrong');
+    }
+  };
+ 
+  const handleUpdateAdmin = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/admin/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+ 
+      if (response.ok) {
+        alert('Admin updated successfully');
+        handleCloseModal();
+        window.location.reload();
+      } else {
+        alert('Failed to update admin');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Something went wrong');
+    }
+  };
+ 
+  const handleSubmit = () => {
+    if (isEditMode) {
+      handleUpdateAdmin();
+    } else {
+      handleAddAdmin();
+    }
+  };
+ 
+  const handleEdit = (admin) => {
+    setIsEditMode(true);
+    setEditingId(admin.admin_user_id);
+    setShowModal(true);
+    setFormData({
+      admin_name: admin.admin_name,
+      admin_email: admin.admin_email,
+      admin_password: '',
+      admin_role: admin.admin_role,
+      admin_phone: admin.admin_phone,
+      is_approved: admin.is_approved
+    });
+  };
+ 
   if (adminData === null) return <div>Loading...</div>;
-
+ 
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar />
@@ -871,13 +1054,15 @@ const AdminUsersPage = () => {
             + Add Admin
           </button>
         </div>
-
-        <UserTable />
-
+ 
+        <UserTable onEdit={handleEdit} />
+ 
         {showModal && (
           <AddAdminModal
             formData={formData}
             setFormData={setFormData}
+            onChange={handleInputChange}
+            onSubmit={handleSubmit} // ✅ now supports both add and edit
             onClose={handleCloseModal}
           />
         )}
@@ -885,6 +1070,5 @@ const AdminUsersPage = () => {
     </div>
   );
 };
-
+ 
 export default AdminUsersPage;
-

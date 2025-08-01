@@ -29,19 +29,19 @@ const requestNetsQR = async (cartTotal: number) => {
 // Main controller function
 export const generateQrCode = async (req: Request, res: Response): Promise<void> => {
   const { cartTotal } = req.body;
-  console.log('🛒 cartTotal:', cartTotal);
+  // console.log('🛒 cartTotal:', cartTotal);
 
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const qrData = await requestNetsQR(cartTotal);
-      console.log(`📦 Attempt ${attempt} QR response:`, qrData);
+      // console.log(`📦 Attempt ${attempt} QR response:`, qrData);
 
       if (
         qrData?.response_code === '00' &&
         qrData?.txn_status === 1 &&
         qrData?.qr_code
       ) {
-        console.log(`✅ QR code generated successfully (attempt ${attempt})`);
+        // console.log(`✅ QR code generated successfully (attempt ${attempt})`);
         res.status(200).json({
           success: true,
           qrData: {
